@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paul's Guides</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* Hero (dark) */
+      --bg: #0a0a0a;
+      --border: #1e1e1e;
+      --border-hover: #2a2a2a;
+      --text: #e8e8e8;
+      --text-muted: #777777;
+      --text-dim: #555555;
+
+      /* Shared accents */
+      --orange: #f7931a;
+      --orange-dim: rgba(247, 147, 26, 0.08);
+      --orange-glow: rgba(247, 147, 26, 0.15);
+      --primal: #bc1870;
+      --primal-dim: rgba(188, 24, 112, 0.08);
+
+      /* Guide (jungle theme) */
+      --sky: #2a4a2a;
+      --sky-deep: #1e3a1e;
+      --cream: #faf8f4;
+      --cream-warm: #f5f0e8;
+      --grass: #e8f3e0;
+      --grass-accent: #6db34a;
+      --guide-bg: rgba(255, 255, 255, 0.92);
+      --guide-card: rgba(255, 255, 255, 0.96);
+      --guide-card-hover: rgba(255, 255, 255, 0.98);
+      --guide-border: rgba(30, 50, 30, 0.15);
+      --guide-border-hover: rgba(30, 50, 30, 0.25);
+      --guide-text: #112211;
+      --guide-text-muted: #2d4a2d;
+      --guide-text-dim: #5a7a5a;
+      --guide-shadow: rgba(10, 30, 10, 0.10);
+      --guide-shadow-hover: rgba(10, 30, 10, 0.18);
+      --jungle-overlay: rgba(15, 35, 15, 0.55);
+
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: 'DM Sans', -apple-system, sans-serif;
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCREENS ===== */
+    .screen {
+      display: none;
+      opacity: 0;
+    }
+    .screen.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ===== TRANSITION OVERLAY ===== */
+    #transition-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      pointer-events: none;
+      background:
+        url('logos/jungle_bg.jpg') center/cover no-repeat;
+      clip-path: circle(0% at 50% 50%);
+      opacity: 1;
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #transition-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%,
+        rgba(200, 230, 180, 0.6) 0%,
+        rgba(80, 140, 60, 0.7) 35%,
+        rgba(30, 70, 20, 0.85) 65%,
+        rgba(10, 35, 10, 0.95) 100%
+      );
+    }
+
+    #transition-overlay.expand {
+      animation: jungleBurst 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    #transition-overlay.fade {
+      opacity: 0;
+    }
+
+    @keyframes jungleBurst {
+      from { clip-path: circle(0% at 50% 50%); }
+      to { clip-path: circle(150% at 50% 50%); }
+    }
+
+    /* ===== HERO / CHOICE SCREEN ===== */
+    #hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      background: var(--bg);
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--orange-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.4;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Hero goes jungle when bitcoin is selected */
+    #hero.light-mode {
+      background: #1e3a1e;
+    }
+
+    #hero.light-mode::before {
+      opacity: 0;
+    }
+
+    #hero.light-mode .hero-label {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #hero.light-mode .hero-title {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.05s, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+    }
+
+    #hero.light-mode .hero-subtitle {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+    }
+
+    #hero.light-mode .meme-container {
+      opacity: 0;
+      transform: scale(0.96) translateY(-4px);
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.12s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.12s;
+    }
+
+    #hero.light-mode .meme-prompt {
+      opacity: 0;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    }
+
+    .hero-label {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: #b0b0b0;
+      text-align: center;
+      margin-bottom: 3.5rem;
+      max-width: 400px;
+    }
+
+    .meme-container {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .meme-container::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        transparent 5%,
+        rgba(255, 255, 255, 0.25) 30%,
+        rgba(255, 255, 255, 0.35) 50%,
+        rgba(255, 255, 255, 0.25) 70%,
+        transparent 95%
+      );
+      box-shadow: 0 0 6px rgba(255, 165, 0, 0.15);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .meme-prompt {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #ffffff;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+      pointer-events: none;
+      animation: prompt-bounce 2s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .meme-prompt .arrow-left {
+      display: inline-block;
+      animation: arrow-nudge-left 1.5s ease-in-out infinite;
+    }
+
+    .meme-prompt .arrow-right {
+      display: inline-block;
+      animation: arrow-nudge-right 1.5s ease-in-out infinite;
+    }
+
+    @keyframes prompt-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-4px); }
+    }
+
+    @keyframes arrow-nudge-left {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-4px); }
+    }
+
+    @keyframes arrow-nudge-right {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(4px); }
+    }
+
+    /* Email button on hero */
+    .hero-email-btn {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.6rem 1.4rem;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-email-btn:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #hero.light-mode .hero-email-btn {
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s;
+    }
+
+    .meme-image {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .meme-hitbox {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 8%;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .meme-hitbox:hover { background: rgba(0, 0, 0, 0.12); }
+
+    /* Spinning logo overlays */
+    .meme-logo-spin {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+      animation: gentleSpin 20s linear infinite;
+    }
+
+    .meme-logo-spin.primal {
+      left: 2%;
+      top: 11%;
+      width: 33%;
+    }
+
+    .meme-logo-spin.bitcoin {
+      right: 0%;
+      top: 11%;
+      width: 33%;
+    }
+
+    @keyframes gentleSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .meme-left { left: 0; }
+    .meme-right { right: 0; }
+
+    .meme-logo-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .meme-hitbox:hover .meme-logo-circle {
+      transform: scale(1.08);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .meme-logo-bitcoin { background: var(--orange); color: #fff; font-size: 1.5rem; font-weight: 700; }
+    .meme-logo-primal { object-fit: cover; }
+
+    .meme-tags {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 0.75rem;
+    }
+
+    .meme-tag {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #ffffff;
+      -webkit-text-stroke: 0.8px #000;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    }
+
+
+    .meme-label {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+    }
+
+    .meme-hitbox:hover .meme-label { opacity: 1; transform: translateY(0); }
+    .meme-label-bitcoin { background: var(--orange); color: #000; }
+    .meme-label-primal { background: var(--primal); color: #fff; }
+
+    /* ===== EMAIL MODAL ===== */
+    #email-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #email-overlay.visible { display: flex; opacity: 1; }
+
+    /* Light variant when bitcoin is selected — jungle backdrop */
+    #email-overlay.light {
+      background: url('logos/jungle_bg.jpg') center/cover no-repeat;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    #email-overlay.light::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 35, 15, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .email-modal {
+      background: #181818;
+      border: 1px solid #2a2a2a;
+      border-radius: var(--radius-lg);
+      padding: 2.75rem 2.25rem 2.25rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      animation: modalIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    /* Light modal — pops against dark jungle overlay */
+    #email-overlay.light .email-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes modalIn {
+      0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .email-modal h2 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: #e8e8e8;
+      transition: color 0.6s ease;
+    }
+
+    #email-overlay.light .email-modal h2 { color: #1a2e1a; }
+
+    .email-modal p {
+      font-size: 0.9rem; color: #777; margin-bottom: 1.75rem;
+      transition: color 0.6s ease;
+    }
+
+    #email-overlay.light .email-modal p { color: #4a6a4a; }
+
+    .email-input-wrap { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+    .email-input-wrap input {
+      flex: 1;
+      background: #0e0e0e;
+      border: 1px solid #2a2a2a;
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+      color: #e8e8e8;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.6s ease, color 0.6s ease;
+    }
+
+    #email-overlay.light .email-input-wrap input {
+      background: rgba(240, 248, 235, 0.6);
+      border-color: rgba(44, 62, 45, 0.15);
+      color: #1a2e1a;
+    }
+
+    #email-overlay.light .email-input-wrap input::placeholder { color: #7a9a7a; }
+
+    .email-input-wrap input:focus { border-color: var(--orange); }
+    .email-input-wrap input::placeholder { color: #555; }
+
+    .btn-submit {
+      background: var(--orange);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.8rem 1.5rem;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn-submit:hover { opacity: 0.85; }
+
+    .btn-skip {
+      background: none;
+      border: none;
+      color: #555;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.2s;
+    }
+    .btn-skip:hover { color: #777; }
+
+    #email-overlay.light .btn-skip { color: #7a9a7a; }
+    #email-overlay.light .btn-skip:hover { color: #4a6a4a; }
+
+    /* Hide skip when opened standalone (no path selected) */
+    #email-overlay.standalone .btn-skip { display: none; }
+
+    /* Close (X) button — only visible in standalone mode */
+    .btn-modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      transition: color 0.2s;
+      display: none;
+    }
+    .btn-modal-close:hover { color: #999; }
+    #email-overlay.standalone .btn-modal-close { display: block; }
+    #email-overlay.light .btn-modal-close { color: #7a9a7a; }
+    #email-overlay.light .btn-modal-close:hover { color: #4a6a4a; }
+
+    .email-success { display: none; padding: 1rem 0; }
+    .email-success .check {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--orange-dim); color: var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem; font-size: 1.5rem;
+    }
+    .email-success p { color: #e8e8e8; font-size: 0.95rem; margin-bottom: 0; }
+    #email-overlay.light .email-success p { color: #1a2e1a; }
+
+    /* ===== BITCOIN GUIDE (jungle theme) ===== */
+    #bitcoin-guide {
+      background: url('logos/jungle_bg.jpg') center/cover fixed;
+      min-height: 100vh;
+      padding-bottom: 4rem;
+      color: var(--guide-text);
+      position: relative;
+    }
+
+    #bitcoin-guide::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(232, 242, 228, 0.88) 0%,
+        rgba(240, 248, 236, 0.85) 30%,
+        rgba(244, 250, 240, 0.83) 60%,
+        rgba(236, 246, 232, 0.86) 100%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #bitcoin-guide > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Guide entrance animation */
+    #bitcoin-guide.entering .guide-back {
+      opacity: 0;
+      animation: guideContentIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+    }
+
+    #bitcoin-guide.entering .guide-header h1 {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: guideContentIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+    }
+
+    #bitcoin-guide.entering .guide-header p {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: guideContentIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s forwards;
+    }
+
+    #bitcoin-guide.entering .guide-section:first-of-type {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: guideContentIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
+    }
+
+    @keyframes guideContentIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .guide-header {
+      text-align: center;
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+    }
+
+    .guide-header::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(247, 147, 26, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .guide-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--guide-text-dim);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .guide-back:hover { color: var(--guide-text); }
+
+    .guide-header h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+      font-weight: 400;
+      margin-bottom: 0.6rem;
+      color: var(--guide-text);
+      letter-spacing: -0.01em;
+    }
+
+    .guide-header h1 span { color: var(--orange); }
+
+    .guide-header p {
+      color: var(--guide-text-muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Nav dots */
+    .guide-nav {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      z-index: 100;
+    }
+
+    .guide-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .guide-nav a {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--guide-border);
+      display: block; transition: all 0.2s; position: relative;
+    }
+
+    .guide-nav a::after {
+      content: attr(data-label);
+      position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+      font-size: 0.7rem; color: var(--guide-text-dim); white-space: nowrap;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      background: rgba(255, 255, 255, 0.95); padding: 0.15rem 0.5rem; border-radius: 4px;
+      box-shadow: 0 2px 8px var(--guide-shadow);
+    }
+
+    .guide-nav a:hover::after { opacity: 1; }
+    .guide-nav a:hover, .guide-nav a.active { background: var(--orange); }
+
+    /* Sections */
+    .guide-section {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .guide-section h2 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      color: var(--guide-text);
+      letter-spacing: -0.01em;
+    }
+
+    .guide-section > p {
+      color: var(--guide-text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+
+    .guide-section > p strong {
+      color: var(--guide-text);
+      font-weight: 600;
+    }
+
+    .guide-section > p em {
+      color: var(--guide-text);
+      font-style: italic;
+    }
+
+    .guide-section h3 {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--guide-text-dim);
+      font-weight: 600;
+      margin: 2rem 0 1rem;
+    }
+
+    .guide-section h3:first-of-type {
+      margin-top: 0.5rem;
+    }
+
+    .podcast-card {
+      background: var(--guide-card);
+      border: 1px solid var(--guide-border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      text-decoration: none;
+      color: var(--guide-text);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.25s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .podcast-card + .podcast-card { margin-top: 0.6rem; }
+
+    .podcast-card:hover {
+      border-color: var(--guide-border-hover);
+      background: var(--guide-card-hover);
+      box-shadow: 0 6px 20px var(--guide-shadow-hover);
+    }
+
+    .podcast-card .podcast-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #1DB954;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .podcast-card .podcast-info { flex: 1; min-width: 0; }
+
+    .podcast-card .podcast-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--guide-text);
+      line-height: 1.35;
+    }
+
+    .podcast-card .podcast-show {
+      font-size: 0.78rem;
+      color: var(--guide-text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .podcast-card .podcast-link {
+      font-size: 0.78rem;
+      color: #1DB954;
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .blog-card {
+      background: var(--guide-card);
+      border: 1px solid var(--guide-border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      color: var(--guide-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: all 0.25s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .blog-card + .blog-card { margin-top: 0.5rem; }
+
+    .blog-card .blog-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--guide-text);
+      line-height: 1.35;
+    }
+
+    .blog-card .blog-author {
+      font-size: 0.78rem;
+      color: var(--guide-text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .blog-card .blog-author a {
+      color: var(--guide-text-muted);
+      text-decoration: underline;
+    }
+
+    .blog-card .blog-link {
+      font-size: 0.78rem;
+      color: var(--orange);
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .divider {
+      max-width: 640px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--guide-border);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== ARISTOTLE COMPARISON TABLE ===== */
+    .aristotle-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--guide-border);
+      background: var(--guide-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .aristotle-table thead th {
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--guide-text);
+      font-weight: 600;
+      padding: 0.9rem 0.85rem;
+      text-align: center;
+      border-bottom: 1px solid var(--guide-border);
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    .aristotle-table thead th:first-child {
+      text-align: left;
+    }
+
+    .aristotle-table tbody td {
+      padding: 0.85rem;
+      text-align: center;
+      border-bottom: 1px solid var(--guide-border);
+      color: var(--guide-text-muted);
+      vertical-align: middle;
+    }
+
+    .aristotle-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .aristotle-table tbody td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--guide-text);
+    }
+
+    .aristotle-table .score-cell {
+      position: relative;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .aristotle-table .score-icon {
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: transform 0.15s ease;
+    }
+
+    .aristotle-table .score-cell:hover .score-icon {
+      transform: scale(1.3);
+    }
+
+    .aristotle-table .score-good { color: var(--grass-accent); }
+    .aristotle-table .score-mid { color: var(--orange); }
+    .aristotle-table .score-bad { color: #d35050; }
+
+    .score-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: #112211;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      width: max-content;
+      max-width: 200px;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .score-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #112211;
+    }
+
+    .score-cell.show-tip .score-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .aristotle-table .col-bitcoin { background: rgba(247, 147, 26, 0.06); }
+    .aristotle-table thead .col-bitcoin { background: rgba(247, 147, 26, 0.10); }
+
+    .aristotle-table tfoot td {
+      padding: 0.9rem 0.85rem;
+      font-weight: 700;
+      border-top: 2px solid var(--guide-border);
+      color: var(--guide-text);
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    .aristotle-table tfoot td:first-child {
+      text-align: left;
+    }
+
+    .aristotle-table .property-hint {
+      display: block;
+      font-weight: 400;
+      font-size: 0.75rem;
+      color: var(--guide-text-dim);
+      margin-top: 0.15rem;
+    }
+
+    /* Inline tip (clickable text with popover) */
+    .inline-tip-trigger {
+      position: relative;
+      cursor: pointer;
+      border-bottom: 1px dashed var(--guide-text);
+    }
+
+    .inline-tip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: #112211;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 400;
+      line-height: 1.55;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      width: max-content;
+      max-width: 280px;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .inline-tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #112211;
+    }
+
+    .inline-tip-trigger.show-tip .inline-tip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Exchange / Wallet cards */
+    .card-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .card-row.two-col { grid-template-columns: repeat(2, 1fr); }
+
+    .card-row-compact .info-card {
+      padding: 1rem 0.75rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .info-card {
+      background: var(--guide-card);
+      border: 1px solid var(--guide-border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      text-decoration: none;
+      color: var(--guide-text);
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px var(--guide-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .info-card:hover {
+      border-color: var(--guide-border-hover);
+      background: var(--guide-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--guide-shadow-hover);
+    }
+
+    .info-card .card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      object-fit: cover; margin-bottom: 0.75rem;
+    }
+
+    .info-card .card-name {
+      font-weight: 600; font-size: 1rem; margin-bottom: 0.35rem;
+      color: var(--guide-text);
+    }
+
+    .info-card .card-desc {
+      font-size: 0.82rem; color: var(--guide-text-muted); line-height: 1.55; flex: 1;
+    }
+
+    .info-card .card-link {
+      font-size: 0.8rem; color: var(--orange); margin-top: 0.75rem;
+      display: flex; align-items: center; gap: 0.3rem; font-weight: 500;
+    }
+
+    .badge {
+      display: inline-block; font-size: 0.68rem; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 0.28rem 0.65rem; border-radius: 6px;
+      margin-bottom: 0.75rem; font-weight: 600; width: fit-content;
+    }
+
+    .badge.orange {
+      background: rgba(247, 147, 26, 0.1); color: var(--orange);
+      border: 1px solid rgba(247, 147, 26, 0.18);
+    }
+
+    .badge.green {
+      background: rgba(109, 179, 74, 0.1); color: var(--grass-accent);
+      border: 1px solid rgba(109, 179, 74, 0.18);
+    }
+
+    .badge.blue {
+      background: rgba(59, 130, 246, 0.08); color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(247, 147, 26, 0.18);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .callout-icon { color: var(--orange); font-size: 1rem; flex-shrink: 0; margin-top: 0.15rem; }
+
+    .callout p {
+      font-size: 0.85rem; color: var(--guide-text-muted); line-height: 1.65;
+    }
+
+    .callout p strong { color: var(--guide-text); }
+
+    /* Video link */
+    .video-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--guide-card); border: 1px solid var(--guide-border);
+      border-radius: var(--radius); padding: 1rem 1.25rem; margin-top: 1.25rem;
+      text-decoration: none; color: var(--guide-text); font-size: 0.9rem;
+      transition: all 0.25s; width: 100%;
+      box-shadow: 0 2px 8px var(--guide-shadow);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .video-link:hover {
+      border-color: var(--guide-border-hover);
+      background: var(--guide-card-hover);
+      box-shadow: 0 6px 20px var(--guide-shadow-hover);
+    }
+
+    .video-link .play-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255, 0, 0, 0.08); color: #e53e3e;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 0.85rem;
+    }
+
+    .video-link .vl-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      object-fit: contain; flex-shrink: 0;
+    }
+
+    .video-link .vl-text { flex: 1; }
+
+    .video-link .vl-title {
+      font-weight: 500; font-size: 0.9rem; margin-bottom: 0.15rem;
+      color: var(--guide-text);
+    }
+
+    .video-link .vl-sub { font-size: 0.78rem; color: var(--guide-text-dim); }
+
+    .video-link .vl-arrow { color: var(--guide-text-dim); font-size: 0.85rem; }
+
+    /* Primal card */
+    .primal-card {
+      background: var(--guide-card); border: 1px solid var(--guide-border);
+      border-radius: var(--radius); padding: 1.75rem; margin-top: 1.5rem;
+      text-decoration: none; color: var(--guide-text); display: block;
+      transition: all 0.25s; box-shadow: 0 2px 8px var(--guide-shadow);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .primal-card:hover {
+      border-color: rgba(188, 24, 112, 0.2);
+      background: var(--guide-card-hover);
+      box-shadow: 0 6px 20px var(--guide-shadow-hover);
+    }
+
+    .primal-card .primal-name {
+      font-weight: 600; font-size: 1.05rem; margin-bottom: 0.35rem;
+      display: flex; align-items: center; gap: 0.5rem; color: var(--guide-text);
+    }
+
+    .primal-card .primal-name .primal-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--primal);
+    }
+
+    .primal-card .primal-desc {
+      font-size: 0.88rem; color: var(--guide-text-muted); line-height: 1.65; margin-bottom: 0.75rem;
+    }
+
+    .primal-card .primal-link {
+      font-size: 0.8rem; color: var(--primal); font-weight: 500;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+
+    /* Hardware wallet cards */
+    .hw-tier { margin-top: 1rem; }
+    .hw-tier + .hw-tier { margin-top: 0.75rem; }
+
+    .hw-card {
+      background: var(--guide-card); border: 1px solid var(--guide-border);
+      border-radius: var(--radius); padding: 1.5rem; text-decoration: none;
+      color: var(--guide-text); display: block; transition: all 0.25s;
+      box-shadow: 0 2px 8px var(--guide-shadow);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .hw-card:hover {
+      border-color: var(--guide-border-hover);
+      background: var(--guide-card-hover);
+      box-shadow: 0 6px 20px var(--guide-shadow-hover);
+    }
+
+    .hw-card .hw-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.35rem;
+    }
+
+    .hw-card .hw-name { font-weight: 600; font-size: 1rem; color: var(--guide-text); }
+    .hw-card .hw-desc { font-size: 0.85rem; color: var(--guide-text-muted); line-height: 1.55; }
+
+    .hw-card .hw-link {
+      font-size: 0.8rem; color: var(--orange); margin-top: 0.75rem;
+      display: flex; align-items: center; gap: 0.3rem; font-weight: 500;
+    }
+
+    /* Footer */
+    .guide-footer {
+      text-align: center; padding: 4rem 2rem 2rem;
+      color: var(--guide-text-dim); font-size: 0.8rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .card-row { grid-template-columns: 1fr; }
+      .card-row.two-col { grid-template-columns: 1fr; }
+      .card-row-compact { grid-template-columns: repeat(3, 1fr); }
+      .email-input-wrap { flex-direction: column; }
+      .guide-nav { display: none; }
+      .guide-section { padding: 2.5rem 1.5rem; }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .fade-up:nth-child(1) { animation-delay: 0.05s; }
+    .fade-up:nth-child(2) { animation-delay: 0.12s; }
+    .fade-up:nth-child(3) { animation-delay: 0.19s; }
+    .fade-up:nth-child(4) { animation-delay: 0.26s; }
+
+    .guide-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .guide-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== TRANSITION OVERLAY ==================== -->
+  <div id="transition-overlay"></div>
+
+  <!-- ==================== HERO / CHOICE ==================== -->
+  <div id="hero" class="screen active">
+    <div class="hero-label fade-up">Paul's Guides</div>
+    <h1 class="hero-title fade-up">Which Way, Anon?</h1>
+    <p class="hero-subtitle fade-up">Free guides to freedom tech.</p>
+
+    <div class="meme-container fade-up">
+      <video src="logos/paul_hero.mp4" class="meme-image" autoplay loop muted playsinline></video>
+      <div class="meme-hitbox meme-left" onclick="selectPath('primal')">
+        <span class="meme-label meme-label-primal">Primal Guide</span>
+      </div>
+      <div class="meme-hitbox meme-right" onclick="selectPath('bitcoin')">
+        <span class="meme-label meme-label-bitcoin">Bitcoin Guide</span>
+      </div>
+      <div class="meme-prompt"><span class="arrow-left">&#8592;</span> Pick a side <span class="arrow-right">&#8594;</span></div>
+    </div>
+    <button class="hero-email-btn" onclick="showEmailStandalone()">Get Updates from Paul</button>
+  </div>
+
+  <!-- ==================== EMAIL MODAL ==================== -->
+  <div id="email-overlay">
+    <div class="email-modal">
+      <button class="btn-modal-close" onclick="closeEmailStandalone()">&times;</button>
+      <div id="email-form-content">
+        <h2>Stay Updated</h2>
+        <p>Get updates from Paul on bitcoin, freedom tech, and more.</p>
+        <div class="email-input-wrap">
+          <input type="email" id="email-input" placeholder="you@email.com" autocomplete="email">
+          <button class="btn-submit" onclick="submitEmail()">Subscribe</button>
+        </div>
+        <button class="btn-skip" onclick="skipEmail()">Skip for now</button>
+      </div>
+      <div class="email-success" id="email-success">
+        <div class="check">&#10003;</div>
+        <p>You're on the list.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BITCOIN GUIDE ==================== -->
+  <div id="bitcoin-guide" class="screen">
+
+    <nav class="guide-nav" id="guide-nav">
+      <a href="#section-buy" data-label="Buy Bitcoin"></a>
+      <a href="#section-learn" data-label="Learn About Money"></a>
+      <a href="#section-custody" data-label="Self Custody"></a>
+      <a href="#section-spend" data-label="Spend"></a>
+      <a href="#section-hardware" data-label="Hardware"></a>
+      <a href="#section-resources" data-label="Podcasts & Blogs"></a>
+    </nav>
+
+    <div class="guide-header">
+      <a class="guide-back" onclick="goHome()">&#8592; Back</a>
+      <h1>The <span>Bitcoin</span> Guide</h1>
+      <p>These are the tools I use and the resources that helped me learn about bitcoin.</p>
+    </div>
+
+    <!-- ===== THE RULES ===== -->
+    <section class="guide-section" id="section-rules" style="text-align: center; padding-top: 1rem;">
+      <div class="section-label">Before We Begin</div>
+      <h2 style="margin-bottom: 1.5rem;">The Rules</h2>
+      <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 380px; margin: 0 auto;">
+        <div class="rule-card" onclick="toggleRule(this)" style="background: var(--guide-card); border: 1px solid var(--guide-border); border-radius: var(--radius); padding: 1.15rem 1.5rem; box-shadow: 0 2px 8px var(--guide-shadow); cursor: pointer; transition: all 0.25s ease;">
+          <div style="display: flex; align-items: center; gap: 1rem; font-size: 1.05rem; font-weight: 500; color: var(--guide-text);">
+            <span style="font-size: 1.4rem;">1.</span> Have fun
+          </div>
+          <div class="rule-detail" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease, margin-top 0.35s ease, opacity 0.3s ease; opacity: 0; font-size: 0.88rem; color: var(--guide-text-muted); line-height: 1.6;">
+            Ya, bitcoin is serious. Sovereignty is serious. But take your time and approach all this with a sense of play.
+          </div>
+        </div>
+        <div class="rule-card" onclick="toggleRule(this)" style="background: var(--guide-card); border: 1px solid var(--guide-border); border-radius: var(--radius); padding: 1.15rem 1.5rem; box-shadow: 0 2px 8px var(--guide-shadow); cursor: pointer; transition: all 0.25s ease;">
+          <div style="display: flex; align-items: center; gap: 1rem; font-size: 1.05rem; font-weight: 500; color: var(--guide-text);">
+            <span style="font-size: 1.4rem;">2.</span> Play with small amounts first
+          </div>
+          <div class="rule-detail" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease, margin-top 0.35s ease, opacity 0.3s ease; opacity: 0; font-size: 0.88rem; color: var(--guide-text-muted); line-height: 1.6;">
+            You'll get used to it eventually.
+          </div>
+        </div>
+        <div class="rule-card" onclick="toggleRule(this)" style="background: var(--guide-card); border: 1px solid var(--guide-border); border-radius: var(--radius); padding: 1.15rem 1.5rem; box-shadow: 0 2px 8px var(--guide-shadow); cursor: pointer; transition: all 0.25s ease;">
+          <div style="display: flex; align-items: center; gap: 1rem; font-size: 1.05rem; font-weight: 500; color: var(--guide-text);">
+            <span style="font-size: 1.4rem;">3.</span> No shitcoins <span style="color: var(--orange);">:)</span>
+          </div>
+          <div class="rule-detail" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease, margin-top 0.35s ease, opacity 0.3s ease; opacity: 0; font-size: 0.88rem; color: var(--guide-text-muted); line-height: 1.6;">
+            Anything but bitcoin is a shitcoin. Stay focused.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== BUY BITCOIN ===== -->
+    <section class="guide-section" id="section-buy">
+      <div class="section-label">01 &mdash; Get Started</div>
+      <h2>Where to Buy Bitcoin</h2>
+      <p>I learn best by doing, and I think the fastest way to educate yourself is to have some skin in the game. These are the exchanges I trust. They all have <strong>proof of reserves</strong>, they're backed one to one, and they're <span class="inline-tip-trigger" onclick="toggleInlineTip(this)"><strong>bitcoin only*</strong><span class="inline-tip">Exchanges that list thousands of tokens have misaligned incentives. Bitcoin-only platforms focus on doing one thing well, are transparent about their reserves, and won't pressure you into gambling on the latest memecoin.</span></span></p>
+
+      <div class="card-row card-row-compact">
+        <a class="info-card" href="https://cash.app" target="_blank" rel="noopener">
+          <img class="card-icon" src="logos/cashapp.png" alt="Cash App">
+          <div class="card-name">Cash App</div>
+        </a>
+
+        <a class="info-card" href="https://strike.me" target="_blank" rel="noopener">
+          <img class="card-icon" src="logos/strike.png" alt="Strike">
+          <div class="card-name">Strike</div>
+        </a>
+
+        <a class="info-card" href="https://river.com" target="_blank" rel="noopener">
+          <img class="card-icon" src="logos/river_icon.png" alt="River" style="border-radius: 10px;">
+          <div class="card-name">River</div>
+        </a>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== WATCH THIS ===== -->
+    <section class="guide-section" id="section-learn">
+      <div class="section-label">02 &mdash; Learn About Money</div>
+      <h2>Start Here</h2>
+      <p>This video will change how you think about money.</p>
+
+      <div style="position: relative; z-index: 2; width: 100%; padding-bottom: 56.25%; border-radius: var(--radius); overflow: hidden; margin-top: 1.25rem; box-shadow: 0 4px 20px var(--guide-shadow-hover); background: #000;">
+        <iframe src="https://www.youtube.com/embed/YtFOxNbmD38" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; inset: 0; width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== ARISTOTLE'S MONEY COMPARISON ===== -->
+    <section class="guide-section" id="section-aristotle">
+      <h2>What Makes Good Money?</h2>
+      <p>In his <a href="http://classics.mit.edu/Aristotle/politics.1.one.html" target="_blank" rel="noopener" style="color: var(--orange); text-decoration: underline;"><em>Politics</em></a>, Aristotle discussed what makes a good medium of exchange. These five properties of sound money are <span class="inline-tip-trigger" onclick="toggleInlineTip(this)">commonly attributed to his ideas.*<span class="inline-tip">Aristotle wrote about money needing to be useful, portable, and measurable. The full list of five properties is a modern summary inspired by his work, with later thinkers like Copernicus adding scarcity.</span></span> Here's how bitcoin, fiat, and gold stack up.</p>
+
+      <table class="aristotle-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Gold</th>
+            <th>Fiat (USD)</th>
+            <th class="col-bitcoin">Bitcoin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              Durable
+              <span class="property-hint">Survives time &amp; wear</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Doesn't corrode or decay. Lasts thousands of years.</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-mid">&#9679;</span>
+              <span class="score-tooltip">Paper wears out. Digital balances depend on banks staying solvent.</span>
+            </td>
+            <td class="col-bitcoin score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Exists as data on a global network. Can't rot, rust, or burn.</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Portable
+              <span class="property-hint">Easy to move anywhere</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-bad">&#9679;</span>
+              <span class="score-tooltip">Heavy. Try crossing a border with $1M in gold bars.</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-mid">&#9679;</span>
+              <span class="score-tooltip">Digital transfers work but need bank permission and can be frozen.</span>
+            </td>
+            <td class="col-bitcoin score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Send any amount anywhere on Earth in minutes. No permission needed.</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Divisible
+              <span class="property-hint">Splits into small units</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-mid">&#9679;</span>
+              <span class="score-tooltip">Can be melted down, but impractical for everyday small purchases.</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Easily split into dollars and cents. Works well for any amount.</span>
+            </td>
+            <td class="col-bitcoin score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Divisible to 8 decimal places. 1 sat = 0.00000001 BTC.</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Fungible
+              <span class="property-hint">Each unit is identical</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">One ounce of pure gold equals any other ounce of pure gold.</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">A dollar is a dollar. Each unit is interchangeable.</span>
+            </td>
+            <td class="col-bitcoin score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Every sat is equal. 1 BTC = 1 BTC, no matter its history.</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Scarce
+              <span class="property-hint">Limited, can't be printed</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-mid">&#9679;</span>
+              <span class="score-tooltip">Relatively scarce, but new gold is mined every year. Supply grows ~1.5% annually.</span>
+            </td>
+            <td class="score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-bad">&#9679;</span>
+              <span class="score-tooltip">Printed endlessly. The USD has lost over 96% of its value since 1913.</span>
+            </td>
+            <td class="col-bitcoin score-cell" onclick="toggleTip(this)">
+              <span class="score-icon score-good">&#9679;</span>
+              <span class="score-tooltip">Hard cap of 21 million. Ever. No government can change that.</span>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Score</td>
+            <td>3 / 5</td>
+            <td>2 / 5</td>
+            <td class="col-bitcoin" style="color: var(--orange);">5 / 5</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== SELF CUSTODY ===== -->
+    <section class="guide-section" id="section-custody">
+      <div class="section-label">03 &mdash; Own Your Keys</div>
+      <h2>Self Custody</h2>
+      <p>When you buy bitcoin on an exchange, they hold it for you. That means if they get hacked, go bankrupt, or freeze your account, your bitcoin is at risk. <strong>Self custody</strong> means moving your bitcoin to a wallet where <em>you</em> control the private keys. Not your keys, not your coins.</p>
+
+      <div class="card-row" style="grid-template-columns: 1fr">
+        <a class="info-card" href="https://bluewallet.io" target="_blank" rel="noopener">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <img class="card-icon" src="logos/bluewallet.png" alt="Blue Wallet" style="margin-bottom: 0;">
+            <div>
+              <div class="card-name" style="margin: 0;">Blue Wallet</div>
+              <div class="badge blue" style="margin-top: 0.25rem;">Recommended</div>
+            </div>
+          </div>
+          <div class="card-desc">Available on phone and desktop. I've used it for years.</div>
+          <div class="card-link">Download &#8599;</div>
+        </a>
+      </div>
+
+      <a href="https://www.youtube.com/watch?v=c8ytiynbnpk" target="_blank" rel="noopener" style="display: flex; align-items: flex-start; gap: 0.75rem; margin-top: 1rem; text-decoration: none; padding: 0.5rem; border-radius: var(--radius); transition: background 0.2s;">
+        <div style="position: relative; flex-shrink: 0; width: 140px; border-radius: 8px; overflow: hidden;">
+          <img src="https://img.youtube.com/vi/c8ytiynbnpk/mqdefault.jpg" alt="BTC Sessions Blue Wallet Tutorial" style="width: 100%; display: block;">
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem;">&#9654;</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.2rem; padding-top: 0.1rem;">
+          <div style="font-size: 0.85rem; font-weight: 500; color: var(--guide-text); line-height: 1.35;">Your First Bitcoin Wallet &mdash; Full Tutorial</div>
+          <div style="font-size: 0.75rem; color: var(--guide-text-muted);">BTC Sessions</div>
+          <div style="font-size: 0.72rem; color: var(--guide-text-dim);">YouTube</div>
+        </div>
+      </a>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== SPENDING ===== -->
+    <section class="guide-section" id="section-spend">
+      <div class="section-label">04 &mdash; Use It</div>
+      <h2>Spending Bitcoin</h2>
+      <p>Primal is my most used bitcoin wallet. I use it for groceries, paying my friends, and tipping content.</p>
+
+      <a class="primal-card" href="https://primal.net" target="_blank" rel="noopener">
+        <img class="card-icon" src="logos/primal.png" alt="Primal" style="border-radius: 10px; width: 40px; height: 40px; margin-bottom: 0.75rem;">
+        <div class="primal-name"><span class="primal-dot"></span> Primal</div>
+        <div class="primal-link">Open Primal &#8599;</div>
+      </a>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== HARDWARE WALLETS ===== -->
+    <section class="guide-section" id="section-hardware">
+      <div class="section-label">05 &mdash; Level Up</div>
+      <h2>Hardware Wallets</h2>
+      <p>These are hardware wallets I use. There's levels to this. Check out the tutorials for a great place to start!</p>
+
+      <div class="hw-tier">
+        <a class="hw-card" href="https://bitkey.world" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
+            <div class="hw-name" style="font-size: 0.85rem; margin: 0;">Bitkey</div>
+            <img src="logos/bitkey.png" alt="Bitkey" style="width: 44px; height: 44px; border-radius: 10px;">
+          </div>
+          <img src="logos/bitkey_device.png" alt="Bitkey device" style="width: 80px; height: auto;">
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
+            <span class="badge green" style="margin: 0;">Beginner</span>
+            <div class="hw-link">Learn more &#8599;</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="hw-tier">
+        <a class="hw-card" href="https://coldcard.com" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
+            <div class="hw-name" style="font-size: 0.85rem; margin: 0;">Coldcard</div>
+            <img src="logos/coldcard.svg" alt="Coldcard" style="width: 44px; height: 44px; border-radius: 10px;">
+          </div>
+          <img src="logos/coldcard_device.png" alt="Coldcard device" style="width: 80px; height: auto;">
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
+            <span class="badge orange" style="margin: 0;">Expert</span>
+            <div class="hw-link">Learn more &#8599;</div>
+          </div>
+        </a>
+      </div>
+
+      <a href="https://www.youtube.com/watch?v=FAYmE5-40PQ" target="_blank" rel="noopener" style="display: flex; align-items: flex-start; gap: 0.75rem; margin-top: 1rem; text-decoration: none; padding: 0.5rem; border-radius: var(--radius); transition: background 0.2s;">
+        <div style="position: relative; flex-shrink: 0; width: 140px; border-radius: 8px; overflow: hidden;">
+          <img src="https://img.youtube.com/vi/FAYmE5-40PQ/mqdefault.jpg" alt="BTC Sessions Coldcard Tutorial" style="width: 100%; display: block;">
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem;">&#9654;</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.2rem; padding-top: 0.1rem;">
+          <div style="font-size: 0.85rem; font-weight: 500; color: var(--guide-text); line-height: 1.35;">Coldcard Full Tutorial</div>
+          <div style="font-size: 0.75rem; color: var(--guide-text-muted);">BTC Sessions</div>
+          <div style="font-size: 0.72rem; color: var(--guide-text-dim);">YouTube</div>
+        </div>
+      </a>
+
+      <a href="https://www.youtube.com/watch?v=ccKZDNGhK9M" target="_blank" rel="noopener" style="display: flex; align-items: flex-start; gap: 0.75rem; margin-top: 0.5rem; text-decoration: none; padding: 0.5rem; border-radius: var(--radius); transition: background 0.2s;">
+        <div style="position: relative; flex-shrink: 0; width: 140px; border-radius: 8px; overflow: hidden;">
+          <img src="https://img.youtube.com/vi/ccKZDNGhK9M/mqdefault.jpg" alt="Bitkey Tutorial" style="width: 100%; display: block;">
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem;">&#9654;</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.2rem; padding-top: 0.1rem;">
+          <div style="font-size: 0.85rem; font-weight: 500; color: var(--guide-text); line-height: 1.35;">Bitkey Full Tutorial</div>
+          <div style="font-size: 0.75rem; color: var(--guide-text-muted);">BTC Sessions</div>
+          <div style="font-size: 0.72rem; color: var(--guide-text-dim);">YouTube</div>
+        </div>
+      </a>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ===== PODCASTS & BLOGS ===== -->
+    <section class="guide-section" id="section-resources">
+      <div class="section-label">06 &mdash; Go Deeper</div>
+      <h2>Podcasts &amp; Blogs</h2>
+      <p>Great conversations and writings that shaped how many of us think about Bitcoin.</p>
+
+      <h3>Podcasts</h3>
+
+      <a class="podcast-card" href="https://open.spotify.com/episode/5RdfGqrEnWgaV9TtRAO5R5" target="_blank" rel="noopener">
+        <div class="podcast-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="podcast-info">
+          <div class="podcast-title">Tetragrammaton &mdash; Jack Mallers</div>
+          <div class="podcast-show">Rick Rubin</div>
+        </div>
+        <span class="podcast-link">Listen on Spotify &#8599;</span>
+      </a>
+
+      <a class="podcast-card" href="https://open.spotify.com/episode/4sxOV3BBXl2vubT2t2emOg" target="_blank" rel="noopener">
+        <div class="podcast-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="podcast-info">
+          <div class="podcast-title">Lex Fridman #176 &mdash; Robert Breedlove</div>
+          <div class="podcast-show">Lex Fridman Podcast</div>
+        </div>
+        <span class="podcast-link">Listen on Spotify &#8599;</span>
+      </a>
+
+      <a class="podcast-card" href="https://open.spotify.com/episode/4jEzlsYh0ZQioqG54rLqna" target="_blank" rel="noopener">
+        <div class="podcast-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="podcast-info">
+          <div class="podcast-title">Joe Rogan #446 &mdash; Andreas Antonopoulos</div>
+          <div class="podcast-show">The Joe Rogan Experience</div>
+        </div>
+        <span class="podcast-link">Listen on Spotify &#8599;</span>
+      </a>
+
+      <h3>Blogs</h3>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">Shelling Out: The Origins of Money</div>
+          <div class="blog-author"><a href="https://x.com/NickSzabo4" target="_blank" rel="noopener">Nick Szabo</a></div>
+        </div>
+        <a class="blog-link" href="https://nakamotoinstitute.org/library/shelling-out/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">Bitcoin is Time</div>
+          <div class="blog-author"><a href="https://primal.net/dergigi" target="_blank" rel="noopener">Gigi</a></div>
+        </div>
+        <a class="blog-link" href="https://primal.net/dergigi/bitcoin-is-time" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">The Seven Network Effects of Bitcoin</div>
+          <div class="blog-author">Trace Mayer</div>
+        </div>
+        <a class="blog-link" href="https://nakamotoinstitute.org/mempool/the-seven-network-effects-of-bitcoin/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">The Bullish Case for Bitcoin</div>
+          <div class="blog-author"><a href="https://x.com/real_vijay" target="_blank" rel="noopener">Vijay Boyapati</a></div>
+        </div>
+        <a class="blog-link" href="https://nakamotoinstitute.org/mempool/the-bullish-case-for-bitcoin/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">Everyone&#8217;s a Scammer</div>
+          <div class="blog-author">Michael Goldstein</div>
+        </div>
+        <a class="blog-link" href="https://nakamotoinstitute.org/mempool/everyones-a-scammer/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">Bitcoin is the Mycelium of Money</div>
+          <div class="blog-author"><a href="https://primal.net/brandonquittem" target="_blank" rel="noopener">Brandon Quittem</a></div>
+        </div>
+        <a class="blog-link" href="https://brandonquittem.com/bitcoin-is-the-mycelium-of-money/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+    </section>
+
+    <div class="guide-footer">
+      <div style="margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--guide-text-dim); line-height: 1.7;">
+        Need more? Check out these guides from other Bitcoiners:<br>
+        <a href="https://odell.xyz" target="_blank" rel="noopener" style="color: var(--guide-text-muted); text-decoration: underline;">odell.xyz</a> &nbsp;&middot;&nbsp;
+        <a href="https://whybitcoinonly.com" target="_blank" rel="noopener" style="color: var(--guide-text-muted); text-decoration: underline;">whybitcoinonly.com</a> &nbsp;&middot;&nbsp;
+        <a href="https://www.lopp.net/bitcoin-information.html" target="_blank" rel="noopener" style="color: var(--guide-text-muted); text-decoration: underline;">lopp.net</a>
+      </div>
+      <form onsubmit="event.preventDefault()" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; max-width: 360px; margin-left: auto; margin-right: auto;">
+        <input type="email" placeholder="your@email.com" style="flex: 1; padding: 0.55rem 0.85rem; border-radius: 8px; border: 1px solid var(--guide-border); background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 0.82rem; color: var(--guide-text); outline: none; font-family: inherit;">
+        <button type="submit" style="padding: 0.55rem 1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
+      </form>
+      <a href="https://ownyourposts.com/whyprimal" target="_blank" rel="noopener" style="display: inline-block; margin-bottom: 1.5rem; font-size: 0.8rem; color: var(--primal); text-decoration: underline;">Learn about Primal</a><br>
+      Made with care by Paul
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    let selectedPath = null;
+
+    function selectPath(path) {
+      selectedPath = path;
+
+      if (path === 'bitcoin') {
+        // Transition hero to light mode, then show modal
+        const hero = document.getElementById('hero');
+        hero.classList.add('light-mode');
+        document.body.style.transition = 'background 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        document.body.style.background = '#1e3a1e';
+
+        // Wait for the background transition to get going, then show modal
+        setTimeout(() => {
+          showEmailModal(true);
+        }, 400);
+      } else {
+        showEmailModal(false);
+      }
+    }
+
+    function showEmailModal(light) {
+      const overlay = document.getElementById('email-overlay');
+      if (light) overlay.classList.add('light');
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        overlay.classList.add('visible');
+        document.getElementById('email-input').focus();
+      });
+    }
+
+    function showEmailStandalone() {
+      const overlay = document.getElementById('email-overlay');
+      overlay.classList.add('standalone');
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        overlay.classList.add('visible');
+        document.getElementById('email-input').focus();
+      });
+    }
+
+    function closeEmailStandalone() {
+      hideEmailModal();
+    }
+
+    function hideEmailModal(callback) {
+      const overlay = document.getElementById('email-overlay');
+      overlay.classList.remove('visible');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.classList.remove('light', 'standalone');
+        document.getElementById('email-form-content').style.display = '';
+        document.getElementById('email-success').style.display = 'none';
+        document.getElementById('email-input').value = '';
+        if (callback) callback();
+      }, 300);
+    }
+
+    function submitEmail() {
+      const email = document.getElementById('email-input').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('email-input').style.borderColor = '#ff4444';
+        setTimeout(() => {
+          document.getElementById('email-input').style.borderColor = '';
+        }, 1500);
+        return;
+      }
+
+      document.getElementById('email-form-content').style.display = 'none';
+      document.getElementById('email-success').style.display = 'block';
+      console.log('Email submitted:', email);
+
+      const isStandalone = document.getElementById('email-overlay').classList.contains('standalone');
+      setTimeout(() => {
+        hideEmailModal(isStandalone ? null : navigateToPath);
+      }, 1200);
+    }
+
+    function skipEmail() {
+      hideEmailModal(navigateToPath);
+    }
+
+    function navigateToPath() {
+      if (selectedPath === 'primal') {
+        window.location.href = 'https://ownyourposts.com/whyprimal';
+      } else if (selectedPath === 'bitcoin') {
+        playTransition();
+      }
+    }
+
+    function playTransition() {
+      const overlay = document.getElementById('transition-overlay');
+      const hero = document.getElementById('hero');
+      const guide = document.getElementById('bitcoin-guide');
+
+      // Phase 1: Expand jungle burst from center
+      requestAnimationFrame(() => {
+        overlay.classList.add('expand');
+      });
+
+      // Phase 2: Once burst covers screen, switch content underneath
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+
+        hero.classList.remove('active', 'light-mode');
+        hero.style.display = 'none';
+
+        guide.classList.add('active', 'entering');
+        document.body.style.background = '#1e3a1e';
+
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          requestAnimationFrame(() => { window.scrollTo(0, 0); });
+        });
+
+        // Phase 3: Fade overlay to reveal guide
+        setTimeout(() => {
+          overlay.classList.add('fade');
+        }, 150);
+
+        // Phase 4: Cleanup
+        setTimeout(() => {
+          overlay.classList.remove('expand', 'fade');
+          guide.classList.remove('entering');
+          initGuide();
+        }, 700);
+      }, 700);
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+      });
+      const target = document.getElementById(id);
+      target.classList.add('active');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+      });
+    }
+
+    function goHome() {
+      const hero = document.getElementById('hero');
+      const overlay = document.getElementById('transition-overlay');
+      overlay.classList.remove('expand', 'fade');
+      hero.style.display = '';
+      hero.classList.remove('light-mode', 'exiting');
+      document.body.style.transition = 'background 0.6s ease';
+      document.body.style.background = '#0a0a0a';
+      showScreen('hero');
+      // Re-trigger fade-up animations
+      document.querySelectorAll('#hero .fade-up').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight;
+        el.style.animation = '';
+      });
+    }
+
+    function toggleTip(cell) {
+      const wasOpen = cell.classList.contains('show-tip');
+      // Close all open tips
+      document.querySelectorAll('.score-cell.show-tip').forEach(c => c.classList.remove('show-tip'));
+      // Toggle this one
+      if (!wasOpen) cell.classList.add('show-tip');
+    }
+
+    function toggleInlineTip(el) {
+      const wasOpen = el.classList.contains('show-tip');
+      document.querySelectorAll('.inline-tip-trigger.show-tip').forEach(t => t.classList.remove('show-tip'));
+      if (!wasOpen) el.classList.add('show-tip');
+    }
+
+    // Close tips when tapping outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.score-cell')) {
+        document.querySelectorAll('.score-cell.show-tip').forEach(c => c.classList.remove('show-tip'));
+      }
+      if (!e.target.closest('.inline-tip-trigger')) {
+        document.querySelectorAll('.inline-tip-trigger.show-tip').forEach(t => t.classList.remove('show-tip'));
+      }
+    });
+
+    function toggleRule(card) {
+      const detail = card.querySelector('.rule-detail');
+      const isOpen = detail.style.maxHeight !== '0px' && detail.style.maxHeight !== '';
+      if (isOpen) {
+        detail.style.maxHeight = '0';
+        detail.style.marginTop = '0';
+        detail.style.opacity = '0';
+      } else {
+        detail.style.maxHeight = detail.scrollHeight + 'px';
+        detail.style.marginTop = '0.75rem';
+        detail.style.opacity = '1';
+      }
+    }
+
+    document.getElementById('email-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitEmail();
+    });
+
+    function initGuide() {
+      const sections = document.querySelectorAll('.guide-section');
+      const navLinks = document.querySelectorAll('.guide-nav a');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      sections.forEach(section => observer.observe(section));
+
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.guide-nav a[href="#${entry.target.id}"]`);
+            if (activeLink) activeLink.classList.add('active');
+          }
+        });
+      }, { threshold: 0.4 });
+
+      sections.forEach(section => sectionObserver.observe(section));
+    }
+  </script>
+</body>
+</html>
