@@ -181,7 +181,7 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.75rem;
     }
 
     .hero-title {
@@ -190,14 +190,14 @@
       font-weight: 400;
       text-align: center;
       line-height: 1.15;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .hero-subtitle {
       font-size: 1.05rem;
       color: #b0b0b0;
       text-align: center;
-      margin-bottom: 3.5rem;
+      margin-bottom: 2rem;
       max-width: 400px;
     }
 
@@ -762,6 +762,39 @@
       font-style: italic;
     }
 
+    .stat-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--guide-text);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .stat-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--guide-text);
+    }
+
+    .nostr-stat-pill:hover .stat-tooltip {
+      display: block;
+    }
+
     .guide-section h3 {
       font-size: 0.75rem;
       letter-spacing: 0.12em;
@@ -1315,6 +1348,19 @@
 
   <!-- ==================== HERO / CHOICE ==================== -->
   <div id="hero" class="screen active">
+    <div class="fade-up" style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 999px; font-size: 0.8rem; color: var(--text-muted);">
+        <span style="color: var(--orange); font-weight: 600;">&#8383;</span>
+        <span style="font-weight: 600;" id="hero-btc-price-val">...</span>
+        <span id="hero-btc-change" style="font-size: 0.72rem; font-weight: 500;"></span>
+      </div>
+      <a href="https://stats.andotherstuff.org" target="_blank" rel="noopener" class="nostr-stat-pill" style="position: relative; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 999px; font-size: 0.8rem; color: var(--text-muted); text-decoration: none;">
+        <img src="logos/nostr_ostrich.svg" alt="Nostr" style="width: 18px; height: 18px;">
+        <span style="font-weight: 600;">Nostr Users</span>
+        <span style="font-size: 0.72rem; color: var(--text-dim);">Live</span>
+        <div class="stat-tooltip" style="background: #333; color: #eee;">Daily publishing users on the Nostr network &mdash; the open protocol behind Primal. See the full dashboard at stats.andotherstuff.org<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#333;"></div></div>
+      </a>
+    </div>
     <div class="hero-label fade-up">Paul's Guides</div>
     <h1 class="hero-title fade-up">Which Way, Anon?</h1>
     <p class="hero-subtitle fade-up">Free guides to freedom tech.</p>
@@ -1329,21 +1375,27 @@
       </div>
       <div class="meme-prompt"><span class="arrow-left">&#8592;</span> Pick a side <span class="arrow-right">&#8594;</span></div>
     </div>
-    <div class="fade-up" style="display: flex; gap: 1.25rem; justify-content: center; margin-top: 1.5rem;">
-      <a href="https://x.com/thepaulosophy" target="_blank" rel="noopener" style="color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
+    <div class="fade-up" style="display: flex; gap: 1.25rem; justify-content: center; align-items: center; margin-top: 1.5rem;">
+      <a href="https://x.com/thepaulosophy" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </a>
-      <a href="https://www.instagram.com/paulinthejungle" target="_blank" rel="noopener" style="color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
+      <a href="https://www.instagram.com/paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
       </a>
-      <a href="https://www.youtube.com/@Paulinthejungle" target="_blank" rel="noopener" style="color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
+      <a href="https://primal.net/paul" target="_blank" rel="noopener" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+        <img src="logos/primal_spin.png" alt="Primal" style="width: 34px; height: 34px; border-radius: 6px; display: block;">
+      </a>
+      <a href="https://www.youtube.com/@Paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
       </a>
-      <a href="https://www.tiktok.com/@paulinthejungle" target="_blank" rel="noopener" style="color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
+      <a href="https://www.tiktok.com/@paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
       </a>
     </div>
-    <button class="hero-email-btn" onclick="showEmailStandalone()">Get Updates from Paul</button>
+    <form class="fade-up" onsubmit="event.preventDefault()" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.25rem; max-width: 340px; margin-left: auto; margin-right: auto;">
+      <input type="email" placeholder="you@email.com" style="flex: 1; padding: 0.6rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--text); outline: none; font-family: inherit;">
+      <button type="submit" style="padding: 0.6rem 1.1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
+    </form>
   </div>
 
   <!-- ==================== EMAIL MODAL ==================== -->
@@ -1378,7 +1430,20 @@
       <a href="#section-resources" data-label="Podcasts & Blogs"></a>
     </nav>
 
-    <div class="guide-header">
+    <div class="guide-header" style="padding-top: 1.5rem;">
+      <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.75rem;">
+        <div id="btc-price-widget" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: var(--guide-card); border: 1px solid var(--guide-border); border-radius: 999px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 0.8rem; color: var(--guide-text);">
+          <span style="color: var(--orange); font-weight: 600;">&#8383;</span>
+          <span style="font-weight: 600;" id="btc-price">...</span>
+          <span id="btc-change" style="font-size: 0.72rem; font-weight: 500;"></span>
+        </div>
+        <a href="https://stats.andotherstuff.org" target="_blank" rel="noopener" class="nostr-stat-pill" style="position: relative; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: var(--guide-card); border: 1px solid var(--guide-border); border-radius: 999px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 0.8rem; color: var(--guide-text); text-decoration: none; cursor: pointer;">
+          <img src="logos/nostr_ostrich.svg" alt="Nostr" style="width: 18px; height: 18px;">
+          <span style="font-weight: 600;">Nostr Users</span>
+          <span style="font-size: 0.72rem; color: var(--guide-text-dim);">Live</span>
+          <div class="stat-tooltip">Daily publishing users on the Nostr network &mdash; the open protocol behind Primal. See the full dashboard at stats.andotherstuff.org</div>
+        </a>
+      </div>
       <a class="guide-back" onclick="goHome()">&#8592; Back</a>
       <h1>The <span>Bitcoin</span> Guide</h1>
       <p>These are the tools I use and the resources that helped me learn about bitcoin.</p>
@@ -1818,6 +1883,31 @@
 
   <!-- ==================== SCRIPTS ==================== -->
   <script>
+    // Bitcoin price widget
+    async function fetchBtcPrice() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+        const data = await res.json();
+        const price = data.bitcoin.usd;
+        const change = data.bitcoin.usd_24h_change;
+        const formatted = '$' + price.toLocaleString('en-US', { maximumFractionDigits: 0 });
+        const sign = change >= 0 ? '+' : '';
+        const changeText = sign + change.toFixed(1) + '%';
+        const changeColor = change >= 0 ? '#4caf50' : '#e53935';
+        document.getElementById('btc-price').textContent = formatted;
+        document.getElementById('btc-change').textContent = changeText;
+        document.getElementById('btc-change').style.color = changeColor;
+        document.getElementById('hero-btc-price-val').textContent = formatted;
+        document.getElementById('hero-btc-change').textContent = changeText;
+        document.getElementById('hero-btc-change').style.color = changeColor;
+      } catch (e) {
+        document.getElementById('btc-price').textContent = '—';
+        document.getElementById('hero-btc-price-val').textContent = '—';
+      }
+    }
+    fetchBtcPrice();
+    setInterval(fetchBtcPrice, 60000);
+
     let selectedPath = null;
 
     function selectPath(path) {
