@@ -892,7 +892,11 @@
       -webkit-backdrop-filter: blur(12px);
     }
 
-    .blog-card + .blog-card { margin-top: 0.5rem; }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
 
     .blog-card .blog-title {
       font-weight: 600;
@@ -1323,6 +1327,7 @@
       .email-input-wrap { flex-direction: column; }
       .guide-nav { display: none; }
       .guide-section { padding: 2.5rem 1.5rem; }
+      .blog-grid { grid-template-columns: 1fr; }
     }
 
     /* ===== ANIMATIONS ===== */
@@ -1374,7 +1379,7 @@
       </a>
     </div>
     <div class="hero-label fade-up">Paul's Guides</div>
-    <h1 class="hero-title fade-up">Which Way, Anon?</h1>
+    <h1 class="hero-title fade-up">Choose Your Path</h1>
     <p class="hero-subtitle fade-up">Free guides to freedom tech.</p>
 
     <div class="meme-container fade-up">
@@ -1439,7 +1444,7 @@
       <a href="#section-custody" data-label="Self Custody"></a>
       <a href="#section-spend" data-label="Spend"></a>
       <a href="#section-hardware" data-label="Hardware"></a>
-      <a href="#section-resources" data-label="Podcasts & Blogs"></a>
+      <a href="#section-resources" data-label="Podcasts, Blogs & Books"></a>
     </nav>
 
     <div class="guide-header" style="padding-top: 1.5rem;">
@@ -1774,7 +1779,7 @@
     <!-- ===== PODCASTS & BLOGS ===== -->
     <section class="guide-section" id="section-resources">
       <div class="section-label">06 &mdash; Go Deeper</div>
-      <h2>Podcasts &amp; Blogs</h2>
+      <h2>Podcasts, Blogs &amp; Books</h2>
       <p>Great conversations and writings that shaped how many of us think about Bitcoin.</p>
 
       <h3>Podcasts</h3>
@@ -1814,6 +1819,7 @@
 
       <h3>Blogs</h3>
 
+      <div class="blog-grid">
       <div class="blog-card">
         <div>
           <div class="blog-title">Shelling Out: The Origins of Money</div>
@@ -1860,6 +1866,43 @@
           <div class="blog-author"><a href="https://primal.net/brandonquittem" target="_blank" rel="noopener">Brandon Quittem</a></div>
         </div>
         <a class="blog-link" href="https://brandonquittem.com/bitcoin-is-the-mycelium-of-money/" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+      </div>
+
+      <h3>Books</h3>
+
+      <div class="blog-grid">
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">The Bitcoin Standard</div>
+          <div class="blog-author"><a href="https://primal.net/saifedean" target="_blank" rel="noopener">Saifedean Ammous</a></div>
+        </div>
+        <a class="blog-link" href="https://saifedean.com/thebitcoinstandard" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">21 Lessons</div>
+          <div class="blog-author"><a href="https://primal.net/dergigi" target="_blank" rel="noopener">Gigi</a></div>
+        </div>
+        <a class="blog-link" href="https://21lessons.com" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">The Price of Tomorrow</div>
+          <div class="blog-author"><a href="https://primal.net/jeffbooth" target="_blank" rel="noopener">Jeff Booth</a></div>
+        </div>
+        <a class="blog-link" href="https://www.amazon.com/dp/1999257405" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
+
+      <div class="blog-card">
+        <div>
+          <div class="blog-title">Broken Money</div>
+          <div class="blog-author"><a href="https://primal.net/lyn" target="_blank" rel="noopener">Lyn Alden</a></div>
+        </div>
+        <a class="blog-link" href="https://www.audible.com/es_US/pd/Broken-Money-Audiolibro/B0CNSDDBTM" target="_blank" rel="noopener">Read &#8599;</a>
+      </div>
       </div>
     </section>
 
