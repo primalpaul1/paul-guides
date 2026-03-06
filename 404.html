@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script>
+    // Redirect known paths to index.html with query param for SPA routing
+    var path = location.pathname.replace(/\/$/, '');
+    var known = ['/bitcoin'];
+    if (known.indexOf(path) !== -1) {
+      location.replace('/?p=' + path.slice(1));
+    } else {
+      location.replace('/');
+    }
+  </script>
+</head>
+<body></body>
+</html>

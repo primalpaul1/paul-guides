@@ -2195,6 +2195,49 @@
 
       sections.forEach(section => sectionObserver.observe(section));
     }
+    // Deep-link: /bitcoin → jump straight to guide
+    (function() {
+      var params = new URLSearchParams(location.search);
+      var p = params.get('p');
+      if (p === 'bitcoin') {
+        history.replaceState(null, '', '/bitcoin');
+        // Skip hero, show guide immediately without transition
+        var hero = document.getElementById('hero');
+        var guide = document.getElementById('bitcoin-guide');
+        hero.classList.remove('active');
+        hero.style.display = 'none';
+        guide.classList.add('active');
+        document.body.style.background = '#1e3a1e';
+        initGuide();
+      }
+    })();
+
+    // Update URL when navigating to/from guide
+    var origPlayTransition = playTransition;
+    playTransition = function() {
+      origPlayTransition();
+      setTimeout(function() { history.pushState(null, '', '/bitcoin'); }, 700);
+    };
+
+    var origGoHome = goHome;
+    goHome = function() {
+      origGoHome();
+      history.pushState(null, '', '/');
+    };
+
+    window.addEventListener('popstate', function() {
+      if (location.pathname === '/bitcoin') {
+        var hero = document.getElementById('hero');
+        var guide = document.getElementById('bitcoin-guide');
+        hero.classList.remove('active');
+        hero.style.display = 'none';
+        guide.classList.add('active');
+        document.body.style.background = '#1e3a1e';
+        initGuide();
+      } else {
+        goHome();
+      }
+    });
   </script>
 </body>
 </html>
