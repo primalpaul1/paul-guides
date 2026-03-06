@@ -2195,7 +2195,7 @@
 
       sections.forEach(section => sectionObserver.observe(section));
     }
-    // Deep-link: /bitcoin → jump straight to guide
+    // Deep-link: /bitcoin → jump straight to guide + show email popup
     (function() {
       var params = new URLSearchParams(location.search);
       var p = params.get('p');
@@ -2209,6 +2209,8 @@
         guide.classList.add('active');
         document.body.style.background = '#1e3a1e';
         initGuide();
+        // Show email popup after a short delay for direct visitors
+        setTimeout(function() { showEmailStandalone(); }, 1500);
       }
     })();
 
