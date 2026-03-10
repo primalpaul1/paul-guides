@@ -1356,6 +1356,220 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Nostr Feed */
+    .nostr-feed {
+      max-width: 520px;
+      margin: 1.5rem auto 0;
+      text-align: left;
+    }
+    .nostr-feed-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+    .nostr-feed-title a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nostr-feed-title a:hover { color: var(--text); }
+    .nostr-note {
+      display: block;
+      padding: 1rem 1rem 0.7rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.15s;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: noteIn 0.4s ease forwards;
+    }
+    .nostr-note:last-child { border-bottom: none; }
+    .nostr-note:hover { background: rgba(255,255,255,0.04); }
+    .nostr-note:nth-child(1) { animation-delay: 0s; }
+    .nostr-note:nth-child(2) { animation-delay: 0.06s; }
+    .nostr-note:nth-child(3) { animation-delay: 0.12s; }
+    .nostr-note:nth-child(4) { animation-delay: 0.18s; }
+    .nostr-note:nth-child(5) { animation-delay: 0.24s; }
+    @keyframes noteIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .nostr-note-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+    .nostr-note-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .nostr-note-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .nostr-note-handle {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .nostr-note-time {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .nostr-note-text {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.88);
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      padding-left: calc(36px + 0.6rem);
+    }
+    .nostr-note-actions {
+      display: flex;
+      gap: 1.5rem;
+      padding-left: calc(36px + 0.6rem);
+      margin-top: 0.5rem;
+      padding-bottom: 0.15rem;
+    }
+    .nostr-note-action {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      transition: color 0.15s;
+    }
+    .nostr-note:hover .nostr-note-action { color: var(--text-muted); }
+    .nostr-note-action svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+    .nostr-note-action.zap svg { stroke-width: 2; }
+    .nostr-note-repost {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding-left: calc(36px + 0.6rem);
+      margin-bottom: 0.3rem;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .nostr-note-repost svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+    .nostr-quote {
+      margin-top: 0.5rem;
+      margin-left: calc(36px + 0.6rem);
+      padding: 0.65rem 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+    }
+    .nostr-quote-header {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+    }
+    .nostr-quote-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .nostr-quote-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .nostr-quote-handle {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .nostr-quote-text {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.75);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .nostr-quote-media {
+      margin-top: 0.4rem;
+    }
+    .nostr-quote-media img,
+    .nostr-quote-media video {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      display: block;
+    }
+    .nostr-note-media {
+      margin-top: 0.5rem;
+      padding-left: calc(36px + 0.6rem);
+    }
+    .nostr-note-media img,
+    .nostr-note-media video {
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      display: block;
+    }
+    .nostr-skeleton {
+      display: flex;
+      gap: 0.6rem;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nostr-skeleton-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      animation: shimmer 1.5s infinite;
+    }
+    .nostr-skeleton-body { flex: 1; }
+    .nostr-skeleton-line {
+      height: 0.65rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      animation: shimmer 1.5s infinite;
+    }
+    .nostr-skeleton-line:nth-child(1) { width: 40%; margin-bottom: 0.65rem; }
+    .nostr-skeleton-line:nth-child(2) { width: 95%; margin-bottom: 0.45rem; }
+    .nostr-skeleton-line:nth-child(3) { width: 70%; }
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
   </style>
 </head>
 <body>
@@ -1413,6 +1627,14 @@
       <input type="email" placeholder="you@email.com" style="flex: 1; padding: 0.6rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--text); outline: none; font-family: inherit;">
       <button type="submit" style="padding: 0.6rem 1.1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
     </form>
+    <div id="nostr-feed" class="nostr-feed fade-up" style="display:none">
+      <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
+      <div id="nostr-feed-content">
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+      </div>
+    </div>
   </div>
 
   <!-- ==================== EMAIL MODAL ==================== -->
@@ -2240,6 +2462,240 @@
         goHome();
       }
     });
+
+    // ==================== NOSTR FEED ====================
+    (function() {
+      var PUBKEY = '805b34f708837dfb3e7f05815ac5760564628b58d5a0ce839ccbb6ef3620fac3';
+      var feedEl = document.getElementById('nostr-feed');
+      var contentEl = document.getElementById('nostr-feed-content');
+
+      var svgReply = '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+      var svgRepost = '<svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
+      var svgLike = '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+      var svgZap = '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+
+      function timeAgo(ts) {
+        var s = Math.floor(Date.now() / 1000) - ts;
+        if (s < 60) return s + 's';
+        if (s < 3600) return Math.floor(s / 60) + 'm';
+        if (s < 86400) return Math.floor(s / 3600) + 'h';
+        return Math.floor(s / 86400) + 'd';
+      }
+
+      function esc(t) { return t.replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      function extractMedia(text) {
+        return (text.match(/https?:\/\/\S+\.(jpg|jpeg|png|gif|webp|mp4|mov)(\?\S*)?/gi)) || [];
+      }
+
+      function resolveMentions(text, note, allProfiles) {
+        // Replace nostr:nprofile.../nostr:npub... with @name using p-tags order
+        var ptags = (note.tags || []).filter(function(t) { return t[0] === 'p'; });
+        var idx = 0;
+        return text.replace(/nostr:(nprofile1\S+|npub1\S+)/g, function() {
+          var pk = ptags[idx] ? ptags[idx][1] : null;
+          idx++;
+          if (pk && allProfiles[pk]) {
+            return '@' + (allProfiles[pk].name || allProfiles[pk].handle);
+          }
+          return '';
+        });
+      }
+
+      function clean(text) {
+        return text
+          .replace(/nostr:nevent1\S+/g, '')
+          .replace(/nostr:naddr1\S+/g, '')
+          .replace(/https?:\/\/\S+\.(jpg|jpeg|png|gif|webp|mp4|mov)(\?\S*)?/gi, '')
+          .replace(/\n{2,}/g, '\n')
+          .trim()
+          .slice(0, 280);
+      }
+
+      function fmtCount(n) {
+        if (!n) return '';
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        return String(n);
+      }
+
+      function cachePost(body) {
+        return fetch('https://cache1.primal.net/api/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function(r) { return r.json(); });
+      }
+
+      function parseProfiles(events) {
+        var profiles = {};
+        events.forEach(function(e) {
+          if (e.kind === 0) {
+            try {
+              var m = JSON.parse(e.content);
+              profiles[e.pubkey] = {
+                name: m.display_name || m.name || '',
+                handle: m.name || '',
+                avatar: m.picture || ''
+              };
+            } catch(_) {}
+          }
+        });
+        return profiles;
+      }
+
+      function getQuotedId(note) {
+        var tags = note.tags || [];
+        // Check q-tags first, then e-tags with "mention"
+        for (var i = 0; i < tags.length; i++) {
+          if (tags[i][0] === 'q') return tags[i][1];
+        }
+        for (var i = 0; i < tags.length; i++) {
+          if (tags[i][0] === 'e' && tags[i][3] === 'mention') return tags[i][1];
+        }
+        return null;
+      }
+
+      function renderMedia(urls, cls) {
+        if (!urls.length) return '';
+        var url = urls[0];
+        var isVideo = /\.(mp4|mov)(\?|$)/i.test(url);
+        return '<div class="' + cls + '">' +
+          (isVideo
+            ? '<video src="' + esc(url) + '" autoplay loop muted playsinline preload="auto"></video>'
+            : '<img src="' + esc(url) + '" alt="" loading="lazy">') +
+          '</div>';
+      }
+
+      function renderQuote(qNote, qProfile, allProfiles) {
+        if (!qNote) return '';
+        var p = qProfile || { name: '', handle: '', avatar: '' };
+        var qMedia = extractMedia(qNote.content);
+        var resolved = resolveMentions(qNote.content, qNote, allProfiles);
+        var qText = clean(resolved);
+        if (!qText && !qMedia.length) return '';
+        return '<div class="nostr-quote">' +
+          '<div class="nostr-quote-header">' +
+            (p.avatar ? '<img class="nostr-quote-avatar" src="' + esc(p.avatar) + '" alt="">' : '') +
+            '<span class="nostr-quote-name">' + esc(p.name || p.handle) + '</span>' +
+            (p.handle ? '<span class="nostr-quote-handle">@' + esc(p.handle) + '</span>' : '') +
+          '</div>' +
+          (qText ? '<div class="nostr-quote-text">' + esc(qText) + '</div>' : '') +
+          renderMedia(qMedia, 'nostr-quote-media') +
+        '</div>';
+      }
+
+      cachePost(["feed", { pubkey: PUBKEY, notes: "authored", limit: 30 }])
+      .then(function(events) {
+        var profiles = parseProfiles(events);
+        var paulProfile = profiles[PUBKEY] || { name: 'paul keating', handle: 'paulinthejungle', avatar: '' };
+
+        var stats = {};
+        events.forEach(function(e) {
+          if (e.kind === 10000100) {
+            try { var s = JSON.parse(e.content); stats[s.event_id] = s; } catch(_) {}
+          }
+        });
+
+        // Build unified feed: kind 1 (notes) + kind 6 (reposts)
+        var feedItems = [];
+
+        events.forEach(function(e) {
+          if (e.pubkey !== PUBKEY) return;
+          if (e.kind === 1) {
+            feedItems.push({ type: 'note', note: e, ts: e.created_at });
+          } else if (e.kind === 6) {
+            try {
+              var orig = JSON.parse(e.content);
+              if (orig.kind === 1) {
+                feedItems.push({ type: 'repost', note: orig, ts: e.created_at, repostId: e.id });
+              }
+            } catch(_) {}
+          }
+        });
+
+        feedItems.sort(function(a, b) { return b.ts - a.ts; });
+        feedItems = feedItems.slice(0, 5);
+
+        if (!feedItems.length) { feedEl.style.display = 'none'; return; }
+
+        // Collect quoted event IDs from kind 1 notes
+        var quotedIds = [];
+        feedItems.forEach(function(item) {
+          if (item.type === 'note') {
+            var qid = getQuotedId(item.note);
+            if (qid) quotedIds.push(qid);
+          }
+        });
+
+        var quotedPromise = quotedIds.length
+          ? cachePost(["events", { event_ids: quotedIds, extended_response: true }])
+          : Promise.resolve([]);
+
+        return quotedPromise.then(function(qEvents) {
+          var quotedNotes = {};
+          var qProfiles = parseProfiles(qEvents);
+          var allProfiles = {};
+          Object.keys(profiles).forEach(function(k) { allProfiles[k] = profiles[k]; });
+          Object.keys(qProfiles).forEach(function(k) { allProfiles[k] = qProfiles[k]; });
+          qEvents.forEach(function(e) {
+            if (e.kind === 1) quotedNotes[e.id] = e;
+          });
+
+          contentEl.innerHTML = '';
+          feedItems.forEach(function(item) {
+            var note = item.note;
+            var isRepost = item.type === 'repost';
+            var author = isRepost
+              ? (allProfiles[note.pubkey] || { name: note.pubkey.slice(0, 12) + '...', handle: '', avatar: '' })
+              : paulProfile;
+
+            var media = extractMedia(note.content);
+            var resolved = resolveMentions(note.content, note, allProfiles);
+            var text = clean(resolved);
+            var qid = isRepost ? null : getQuotedId(note);
+            if (!text && !media.length && !qid) return;
+            var st = stats[note.id] || {};
+
+            var repostLabel = isRepost
+              ? '<div class="nostr-note-repost">' + svgRepost + '<span>' + esc(paulProfile.name) + ' reposted</span></div>'
+              : '';
+
+            var quoteHtml = '';
+            if (qid && quotedNotes[qid]) {
+              quoteHtml = renderQuote(quotedNotes[qid], allProfiles[quotedNotes[qid].pubkey], allProfiles);
+            }
+
+            var a = document.createElement('a');
+            a.className = 'nostr-note';
+            a.href = 'https://primal.net/e/' + note.id;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.innerHTML =
+              repostLabel +
+              '<div class="nostr-note-header">' +
+                (author.avatar ? '<img class="nostr-note-avatar" src="' + esc(author.avatar) + '" alt="">' : '<div class="nostr-note-avatar" style="background:rgba(255,255,255,0.1)"></div>') +
+                '<div><div class="nostr-note-name">' + esc(author.name) + '</div>' +
+                (author.handle ? '<div class="nostr-note-handle">@' + esc(author.handle) + '</div>' : '') + '</div>' +
+                '<span class="nostr-note-time">' + timeAgo(item.ts) + '</span>' +
+              '</div>' +
+              (text ? '<div class="nostr-note-text">' + esc(text) + '</div>' : '') +
+              renderMedia(media, 'nostr-note-media') +
+              quoteHtml +
+              '<div class="nostr-note-actions">' +
+                '<span class="nostr-note-action">' + svgReply + '<span>' + fmtCount(st.replies) + '</span></span>' +
+                '<span class="nostr-note-action">' + svgRepost + '<span>' + fmtCount(st.reposts) + '</span></span>' +
+                '<span class="nostr-note-action">' + svgLike + '<span>' + fmtCount(st.likes) + '</span></span>' +
+                '<span class="nostr-note-action zap">' + svgZap + '<span>' + (st.satszapped ? fmtCount(st.satszapped) + ' sats' : '') + '</span></span>' +
+              '</div>';
+            contentEl.appendChild(a);
+          });
+          feedEl.style.display = '';
+        }); // quotedPromise
+      })
+      .catch(function() {
+        feedEl.style.display = 'none';
+      });
+    })();
   </script>
 </body>
 </html>
