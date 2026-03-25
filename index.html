@@ -134,6 +134,12 @@
       background: var(--bg);
       transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    @media (min-width: 1100px) {
+      #hero {
+        justify-content: flex-start;
+        padding-top: 2.5rem;
+      }
+    }
 
     #hero::before {
       content: '';
@@ -1357,11 +1363,60 @@
       transform: translateY(0);
     }
 
+    /* Nostr Dual Layout — side panels on desktop, stacked on mobile */
+    .nostr-dual {
+      width: 100%;
+      max-width: 520px;
+      margin: 1.5rem auto 0;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 1100px) {
+      .nostr-dual {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-width: none;
+        margin: 0;
+        pointer-events: none;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 2.5rem 2rem 2rem;
+      }
+      .nostr-dual > .nostr-feed,
+      .nostr-dual > .nostr-blog {
+        pointer-events: auto;
+        width: 300px;
+        flex-shrink: 0;
+        max-width: none;
+        margin: 0;
+        max-height: 80vh;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .nostr-dual > .nostr-feed::-webkit-scrollbar,
+      .nostr-dual > .nostr-blog::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    @media (min-width: 1400px) {
+      .nostr-dual > .nostr-feed,
+      .nostr-dual > .nostr-blog {
+        width: 340px;
+      }
+    }
+
     /* Nostr Feed */
     .nostr-feed {
       max-width: 520px;
       margin: 1.5rem auto 0;
       text-align: left;
+    }
+    @media (min-width: 1100px) {
+      .nostr-feed { margin: 0; }
     }
     .nostr-feed-title {
       font-size: 0.82rem;
@@ -1570,6 +1625,176 @@
       0%, 100% { opacity: 0.4; }
       50% { opacity: 0.8; }
     }
+
+    /* ===== NOSTR BLOG (long-form articles) ===== */
+    .nostr-blog {
+      max-width: 520px;
+      margin: 2rem auto 0;
+      text-align: left;
+    }
+    @media (min-width: 1100px) {
+      .nostr-blog {
+        margin-top: 0;
+      }
+    }
+    .nostr-blog-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.85rem;
+      text-align: center;
+    }
+    .nostr-blog-title a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nostr-blog-title a:hover { color: var(--text); }
+    .nostr-blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .nostr-blog-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: blogCardIn 0.45s ease forwards;
+    }
+    .nostr-blog-card:nth-child(1) { animation-delay: 0s; }
+    .nostr-blog-card:nth-child(2) { animation-delay: 0.08s; }
+    .nostr-blog-card:nth-child(3) { animation-delay: 0.16s; }
+    .nostr-blog-card:nth-child(4) { animation-delay: 0.24s; }
+    @keyframes blogCardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .nostr-blog-card:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+    .nostr-blog-card-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: rgba(255,255,255,0.06);
+      display: block;
+    }
+    .nostr-blog-card-body {
+      padding: 0.85rem 0.9rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .nostr-blog-card-date {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      margin-bottom: 0.35rem;
+    }
+    .nostr-blog-card-title {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .nostr-blog-card-summary {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.55);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+    .nostr-blog-card-read {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primal);
+      margin-top: 0.65rem;
+    }
+    .nostr-blog-card-read svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+    /* Blog skeleton */
+    .nostr-blog-skeleton {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .nostr-blog-skeleton-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: rgba(255,255,255,0.06);
+      animation: shimmer 1.5s infinite;
+    }
+    .nostr-blog-skeleton-body { padding: 0.85rem 0.9rem 0.9rem; }
+    .nostr-blog-skeleton-line {
+      height: 0.6rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      animation: shimmer 1.5s infinite;
+    }
+    .nostr-blog-skeleton-line:nth-child(1) { width: 35%; margin-bottom: 0.6rem; }
+    .nostr-blog-skeleton-line:nth-child(2) { width: 80%; margin-bottom: 0.45rem; }
+    .nostr-blog-skeleton-line:nth-child(3) { width: 60%; }
+
+    @media (min-width: 1100px) {
+      .nostr-blog-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .nostr-blog-card-img {
+        aspect-ratio: 3 / 2;
+      }
+      .nostr-blog-card-body {
+        padding: 0.55rem 0.6rem 0.6rem;
+      }
+      .nostr-blog-card-title {
+        font-size: 0.82rem;
+        margin-bottom: 0;
+      }
+      .nostr-blog-card-summary {
+        display: none;
+      }
+      .nostr-blog-card-read {
+        margin-top: 0.35rem;
+        font-size: 0.68rem;
+      }
+      .nostr-blog-card-date {
+        font-size: 0.62rem;
+        margin-bottom: 0.2rem;
+      }
+    }
+    @media (max-width: 520px) {
+      .nostr-blog-grid {
+        grid-template-columns: 1fr;
+      }
+      .nostr-blog-card-title {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1627,12 +1852,22 @@
       <input type="email" placeholder="you@email.com" style="flex: 1; padding: 0.6rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--text); outline: none; font-family: inherit;">
       <button type="submit" style="padding: 0.6rem 1.1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
     </form>
-    <div id="nostr-feed" class="nostr-feed fade-up" style="display:none">
-      <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
-      <div id="nostr-feed-content">
-        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
-        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
-        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+    <div class="nostr-dual fade-up">
+      <div id="nostr-feed" class="nostr-feed" style="display:none">
+        <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
+        <div id="nostr-feed-content">
+          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+        </div>
+      </div>
+
+      <div id="nostr-blog" class="nostr-blog" style="display:none">
+        <div class="nostr-blog-title"><a href="https://primal.net/paul#reads" target="_blank" rel="noopener">Blog</a></div>
+        <div id="nostr-blog-grid" class="nostr-blog-grid">
+          <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
+          <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2694,6 +2929,93 @@
       })
       .catch(function() {
         feedEl.style.display = 'none';
+      });
+    })();
+
+    // ==================== NOSTR BLOG (long-form articles) ====================
+    (function() {
+      var PUBKEY = '805b34f708837dfb3e7f05815ac5760564628b58d5a0ce839ccbb6ef3620fac3';
+      var blogEl = document.getElementById('nostr-blog');
+      var gridEl = document.getElementById('nostr-blog-grid');
+
+      var svgArrow = '<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+
+      function esc(t) { return t.replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      function fmtDate(ts) {
+        var d = new Date(ts * 1000);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      function getTag(tags, name) {
+        for (var i = 0; i < tags.length; i++) {
+          if (tags[i][0] === name) return tags[i][1];
+        }
+        return '';
+      }
+
+      function cachePost(body) {
+        return fetch('https://cache1.primal.net/api/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function(r) { return r.json(); });
+      }
+
+      cachePost(["long_form_content_feed", { pubkey: PUBKEY, notes: "authored", limit: 10 }])
+      .then(function(events) {
+        var articles = events.filter(function(e) { return e.kind === 30023; });
+
+        // Deduplicate by d-tag (keep latest)
+        var byDtag = {};
+        articles.forEach(function(e) {
+          var d = getTag(e.tags || [], 'd');
+          if (!byDtag[d] || e.created_at > byDtag[d].created_at) {
+            byDtag[d] = e;
+          }
+        });
+
+        var uniqueArticles = Object.keys(byDtag).map(function(k) { return byDtag[k]; });
+        uniqueArticles.sort(function(a, b) { return b.created_at - a.created_at; });
+        uniqueArticles = uniqueArticles.slice(0, 4);
+
+        if (!uniqueArticles.length) { blogEl.style.display = 'none'; return; }
+
+        gridEl.innerHTML = '';
+        uniqueArticles.forEach(function(article) {
+          var tags = article.tags || [];
+          var title = getTag(tags, 'title') || 'Untitled';
+          var summary = getTag(tags, 'summary') || '';
+          var image = getTag(tags, 'image') || '';
+          var dtag = getTag(tags, 'd') || '';
+          var published = getTag(tags, 'published_at');
+          var ts = published ? parseInt(published) : article.created_at;
+
+          // Build Primal reads URL
+          var articleUrl = 'https://primal.net/paul/' + encodeURIComponent(dtag);
+
+          var card = document.createElement('a');
+          card.className = 'nostr-blog-card';
+          card.href = articleUrl;
+          card.target = '_blank';
+          card.rel = 'noopener';
+
+          card.innerHTML =
+            (image ? '<img class="nostr-blog-card-img" src="' + esc(image) + '" alt="" loading="lazy">' : '<div class="nostr-blog-card-img"></div>') +
+            '<div class="nostr-blog-card-body">' +
+              '<div class="nostr-blog-card-date">' + fmtDate(ts) + '</div>' +
+              '<div class="nostr-blog-card-title">' + esc(title) + '</div>' +
+              (summary ? '<div class="nostr-blog-card-summary">' + esc(summary) + '</div>' : '') +
+              '<div class="nostr-blog-card-read">Read' + svgArrow + '</div>' +
+            '</div>';
+
+          gridEl.appendChild(card);
+        });
+
+        blogEl.style.display = '';
+      })
+      .catch(function() {
+        blogEl.style.display = 'none';
       });
     })();
   </script>
