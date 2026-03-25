@@ -2819,117 +2819,130 @@
         '</div>';
       }
 
-      cachePost(["feed", { pubkey: PUBKEY, notes: "authored", limit: 30 }])
-      .then(function(events) {
-        var profiles = parseProfiles(events);
-        var paulProfile = profiles[PUBKEY] || { name: 'paul keating', handle: 'paulinthejungle', avatar: '' };
+      var lastTopId = null;
 
-        var stats = {};
-        events.forEach(function(e) {
-          if (e.kind === 10000100) {
-            try { var s = JSON.parse(e.content); stats[s.event_id] = s; } catch(_) {}
-          }
-        });
+      function refreshFeed() {
+        cachePost(["feed", { pubkey: PUBKEY, notes: "authored", limit: 30 }])
+        .then(function(events) {
+          var profiles = parseProfiles(events);
+          var paulProfile = profiles[PUBKEY] || { name: 'paul keating', handle: 'paulinthejungle', avatar: '' };
 
-        // Build unified feed: kind 1 (notes) + kind 6 (reposts)
-        var feedItems = [];
-
-        events.forEach(function(e) {
-          if (e.pubkey !== PUBKEY) return;
-          if (e.kind === 1) {
-            feedItems.push({ type: 'note', note: e, ts: e.created_at });
-          } else if (e.kind === 6) {
-            try {
-              var orig = JSON.parse(e.content);
-              if (orig.kind === 1) {
-                feedItems.push({ type: 'repost', note: orig, ts: e.created_at, repostId: e.id });
-              }
-            } catch(_) {}
-          }
-        });
-
-        feedItems.sort(function(a, b) { return b.ts - a.ts; });
-        feedItems = feedItems.slice(0, 5);
-
-        if (!feedItems.length) { feedEl.style.display = 'none'; return; }
-
-        // Collect quoted event IDs from kind 1 notes
-        var quotedIds = [];
-        feedItems.forEach(function(item) {
-          if (item.type === 'note') {
-            var qid = getQuotedId(item.note);
-            if (qid) quotedIds.push(qid);
-          }
-        });
-
-        var quotedPromise = quotedIds.length
-          ? cachePost(["events", { event_ids: quotedIds, extended_response: true }])
-          : Promise.resolve([]);
-
-        return quotedPromise.then(function(qEvents) {
-          var quotedNotes = {};
-          var qProfiles = parseProfiles(qEvents);
-          var allProfiles = {};
-          Object.keys(profiles).forEach(function(k) { allProfiles[k] = profiles[k]; });
-          Object.keys(qProfiles).forEach(function(k) { allProfiles[k] = qProfiles[k]; });
-          qEvents.forEach(function(e) {
-            if (e.kind === 1) quotedNotes[e.id] = e;
-          });
-
-          contentEl.innerHTML = '';
-          feedItems.forEach(function(item) {
-            var note = item.note;
-            var isRepost = item.type === 'repost';
-            var author = isRepost
-              ? (allProfiles[note.pubkey] || { name: note.pubkey.slice(0, 12) + '...', handle: '', avatar: '' })
-              : paulProfile;
-
-            var media = extractMedia(note.content);
-            var resolved = resolveMentions(note.content, note, allProfiles);
-            var text = clean(resolved);
-            var qid = isRepost ? null : getQuotedId(note);
-            if (!text && !media.length && !qid) return;
-            var st = stats[note.id] || {};
-
-            var repostLabel = isRepost
-              ? '<div class="nostr-note-repost">' + svgRepost + '<span>' + esc(paulProfile.name) + ' reposted</span></div>'
-              : '';
-
-            var quoteHtml = '';
-            if (qid && quotedNotes[qid]) {
-              quoteHtml = renderQuote(quotedNotes[qid], allProfiles[quotedNotes[qid].pubkey], allProfiles);
+          var stats = {};
+          events.forEach(function(e) {
+            if (e.kind === 10000100) {
+              try { var s = JSON.parse(e.content); stats[s.event_id] = s; } catch(_) {}
             }
-
-            var a = document.createElement('a');
-            a.className = 'nostr-note';
-            a.href = 'https://primal.net/e/' + note.id;
-            a.target = '_blank';
-            a.rel = 'noopener';
-            a.innerHTML =
-              repostLabel +
-              '<div class="nostr-note-header">' +
-                (author.avatar ? '<img class="nostr-note-avatar" src="' + esc(author.avatar) + '" alt="">' : '<div class="nostr-note-avatar" style="background:rgba(255,255,255,0.1)"></div>') +
-                '<div><div class="nostr-note-name">' + esc(author.name) + '</div>' +
-                (author.handle ? '<div class="nostr-note-handle">@' + esc(author.handle) + '</div>' : '') + '</div>' +
-                '<span class="nostr-note-time">' + timeAgo(item.ts) + '</span>' +
-              '</div>' +
-              (text ? '<div class="nostr-note-text">' + esc(text) + '</div>' : '') +
-              renderMedia(media, 'nostr-note-media') +
-              quoteHtml +
-              '<div class="nostr-note-actions">' +
-                '<span class="nostr-note-action">' + svgReply + '<span>' + fmtCount(st.replies) + '</span></span>' +
-                '<span class="nostr-note-action">' + svgRepost + '<span>' + fmtCount(st.reposts) + '</span></span>' +
-                '<span class="nostr-note-action">' + svgLike + '<span>' + fmtCount(st.likes) + '</span></span>' +
-                '<span class="nostr-note-action zap">' + svgZap + '<span>' + (st.satszapped ? fmtCount(st.satszapped) + ' sats' : '') + '</span></span>' +
-              '</div>';
-            contentEl.appendChild(a);
           });
-          feedEl.style.display = '';
-        }); // quotedPromise
-      })
-      .catch(function() {
-        feedEl.style.display = 'none';
-      });
+
+          // Build unified feed: kind 1 (notes) + kind 6 (reposts)
+          var feedItems = [];
+
+          events.forEach(function(e) {
+            if (e.pubkey !== PUBKEY) return;
+            if (e.kind === 1) {
+              feedItems.push({ type: 'note', note: e, ts: e.created_at });
+            } else if (e.kind === 6) {
+              try {
+                var orig = JSON.parse(e.content);
+                if (orig.kind === 1) {
+                  feedItems.push({ type: 'repost', note: orig, ts: e.created_at, repostId: e.id });
+                }
+              } catch(_) {}
+            }
+          });
+
+          feedItems.sort(function(a, b) { return b.ts - a.ts; });
+          feedItems = feedItems.slice(0, 5);
+
+          if (!feedItems.length) { feedEl.style.display = 'none'; return; }
+
+          // Skip re-render if feed hasn't changed
+          var topId = feedItems[0].note.id;
+          if (topId === lastTopId) return;
+          lastTopId = topId;
+
+          // Collect quoted event IDs from kind 1 notes
+          var quotedIds = [];
+          feedItems.forEach(function(item) {
+            if (item.type === 'note') {
+              var qid = getQuotedId(item.note);
+              if (qid) quotedIds.push(qid);
+            }
+          });
+
+          var quotedPromise = quotedIds.length
+            ? cachePost(["events", { event_ids: quotedIds, extended_response: true }])
+            : Promise.resolve([]);
+
+          return quotedPromise.then(function(qEvents) {
+            var quotedNotes = {};
+            var qProfiles = parseProfiles(qEvents);
+            var allProfiles = {};
+            Object.keys(profiles).forEach(function(k) { allProfiles[k] = profiles[k]; });
+            Object.keys(qProfiles).forEach(function(k) { allProfiles[k] = qProfiles[k]; });
+            qEvents.forEach(function(e) {
+              if (e.kind === 1) quotedNotes[e.id] = e;
+            });
+
+            contentEl.innerHTML = '';
+            feedItems.forEach(function(item) {
+              var note = item.note;
+              var isRepost = item.type === 'repost';
+              var author = isRepost
+                ? (allProfiles[note.pubkey] || { name: note.pubkey.slice(0, 12) + '...', handle: '', avatar: '' })
+                : paulProfile;
+
+              var media = extractMedia(note.content);
+              var resolved = resolveMentions(note.content, note, allProfiles);
+              var text = clean(resolved);
+              var qid = isRepost ? null : getQuotedId(note);
+              if (!text && !media.length && !qid) return;
+              var st = stats[note.id] || {};
+
+              var repostLabel = isRepost
+                ? '<div class="nostr-note-repost">' + svgRepost + '<span>' + esc(paulProfile.name) + ' reposted</span></div>'
+                : '';
+
+              var quoteHtml = '';
+              if (qid && quotedNotes[qid]) {
+                quoteHtml = renderQuote(quotedNotes[qid], allProfiles[quotedNotes[qid].pubkey], allProfiles);
+              }
+
+              var a = document.createElement('a');
+              a.className = 'nostr-note';
+              a.href = 'https://primal.net/e/' + note.id;
+              a.target = '_blank';
+              a.rel = 'noopener';
+              a.innerHTML =
+                repostLabel +
+                '<div class="nostr-note-header">' +
+                  (author.avatar ? '<img class="nostr-note-avatar" src="' + esc(author.avatar) + '" alt="">' : '<div class="nostr-note-avatar" style="background:rgba(255,255,255,0.1)"></div>') +
+                  '<div><div class="nostr-note-name">' + esc(author.name) + '</div>' +
+                  (author.handle ? '<div class="nostr-note-handle">@' + esc(author.handle) + '</div>' : '') + '</div>' +
+                  '<span class="nostr-note-time">' + timeAgo(item.ts) + '</span>' +
+                '</div>' +
+                (text ? '<div class="nostr-note-text">' + esc(text) + '</div>' : '') +
+                renderMedia(media, 'nostr-note-media') +
+                quoteHtml +
+                '<div class="nostr-note-actions">' +
+                  '<span class="nostr-note-action">' + svgReply + '<span>' + fmtCount(st.replies) + '</span></span>' +
+                  '<span class="nostr-note-action">' + svgRepost + '<span>' + fmtCount(st.reposts) + '</span></span>' +
+                  '<span class="nostr-note-action">' + svgLike + '<span>' + fmtCount(st.likes) + '</span></span>' +
+                  '<span class="nostr-note-action zap">' + svgZap + '<span>' + (st.satszapped ? fmtCount(st.satszapped) + ' sats' : '') + '</span></span>' +
+                '</div>';
+              contentEl.appendChild(a);
+            });
+            feedEl.style.display = '';
+          }); // quotedPromise
+        })
+        .catch(function() {
+          // Only hide on first load failure; keep existing feed on refresh failures
+          if (!lastTopId) feedEl.style.display = 'none';
+        });
+      }
+
+      refreshFeed();
+      setInterval(refreshFeed, 60000);
     })();
 
     // ==================== NOSTR BLOG (long-form articles) ====================
