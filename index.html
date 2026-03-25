@@ -2933,6 +2933,7 @@
               contentEl.appendChild(a);
             });
             feedEl.style.display = '';
+            try { localStorage.setItem('nostr_feed_cache', JSON.stringify({ html: contentEl.innerHTML, topId: lastTopId })); } catch(_) {}
           }); // quotedPromise
         })
         .catch(function() {
@@ -2940,6 +2941,16 @@
           if (!lastTopId) feedEl.style.display = 'none';
         });
       }
+
+      // Restore cached feed instantly
+      try {
+        var cached = JSON.parse(localStorage.getItem('nostr_feed_cache'));
+        if (cached && cached.html) {
+          contentEl.innerHTML = cached.html;
+          feedEl.style.display = '';
+          lastTopId = cached.topId || null;
+        }
+      } catch(_) {}
 
       refreshFeed();
       setInterval(refreshFeed, 60000);
@@ -3026,10 +3037,20 @@
         });
 
         blogEl.style.display = '';
+        try { localStorage.setItem('nostr_blog_cache', gridEl.innerHTML); } catch(_) {}
       })
       .catch(function() {
-        blogEl.style.display = 'none';
+        if (!gridEl.children.length) blogEl.style.display = 'none';
       });
+
+      // Restore cached blog instantly
+      try {
+        var cachedBlog = localStorage.getItem('nostr_blog_cache');
+        if (cachedBlog) {
+          gridEl.innerHTML = cachedBlog;
+          blogEl.style.display = '';
+        }
+      } catch(_) {}
     })();
   </script>
 </body>
