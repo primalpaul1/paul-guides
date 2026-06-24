@@ -84,6 +84,96 @@
       opacity: 1;
     }
 
+    /* ===== TOP TABS (Blog / Podcast) ===== */
+    .top-tabs {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .top-tabs a {
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .top-tabs a:hover { color: var(--text); border-color: var(--border-hover); }
+    .top-tabs a.active {
+      color: #fff;
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    /* ===== TAB SCREENS (Blog / Podcast) ===== */
+    .tab-screen {
+      min-height: 100dvh;
+      background: var(--bg);
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    .tab-header {
+      max-width: 760px;
+      margin: 0 auto 2.25rem;
+      text-align: center;
+    }
+    .tab-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .tab-back:hover { color: var(--text); }
+    .tab-title {
+      font-family: var(--serif);
+      font-size: clamp(2.25rem, 5.5vw, 3.25rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin: 1.25rem 0 0.5rem;
+    }
+    .tab-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    #blog-screen .nostr-blog { max-width: 760px; margin: 0 auto; }
+
+    /* ===== PODCAST EMBEDS ===== */
+    .podcast-embeds {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .video-embed {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+    }
+    .video-embed iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
     /* ===== TRANSITION OVERLAY ===== */
     #transition-overlay {
       position: fixed;
@@ -1416,7 +1506,7 @@
       text-align: left;
     }
     @media (min-width: 1100px) {
-      .nostr-feed { margin: 0; }
+      .nostr-feed { margin: 1.5rem auto 0; }
     }
     .nostr-feed-title {
       font-size: 0.82rem;
@@ -1804,18 +1894,14 @@
 
   <!-- ==================== HERO / CHOICE ==================== -->
   <div id="hero" class="screen active">
-    <div class="fade-up" style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
+    <div class="fade-up top-tabs" style="align-items: center; margin-bottom: 1rem;">
       <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 999px; font-size: 0.8rem; color: var(--text-muted);">
         <span style="color: var(--orange); font-weight: 600;">&#8383;</span>
         <span style="font-weight: 600;" id="hero-btc-price-val">...</span>
         <span id="hero-btc-change" style="font-size: 0.72rem; font-weight: 500;"></span>
       </div>
-      <a href="https://stats.andotherstuff.org" target="_blank" rel="noopener" class="nostr-stat-pill" style="position: relative; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 999px; font-size: 0.8rem; color: var(--text-muted); text-decoration: none;">
-        <img src="logos/nostr_ostrich.svg" alt="Nostr" style="width: 18px; height: 18px;">
-        <span style="font-weight: 600;">Nostr Users</span>
-        <span style="font-size: 0.72rem; color: var(--text-dim);">Live</span>
-        <div class="stat-tooltip" style="background: #333; color: #eee;">Daily publishing users on the Nostr network &mdash; the open protocol behind Primal. See the full dashboard at stats.andotherstuff.org<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#333;"></div></div>
-      </a>
+      <a onclick="showTab('blog-screen')">Blog</a>
+      <a onclick="showTab('podcast-screen')">Media</a>
     </div>
     <div class="hero-label fade-up">Paul's Guides</div>
     <h1 class="hero-title fade-up">Choose Your Path</h1>
@@ -1852,23 +1938,52 @@
       <input type="email" placeholder="you@email.com" style="flex: 1; padding: 0.6rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--text); outline: none; font-family: inherit;">
       <button type="submit" style="padding: 0.6rem 1.1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
     </form>
-    <div class="nostr-dual fade-up">
-      <div id="nostr-feed" class="nostr-feed" style="display:none">
-        <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
-        <div id="nostr-feed-content">
-          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
-          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
-          <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
-        </div>
+    <div id="nostr-feed" class="nostr-feed fade-up" style="display:none">
+      <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
+      <div id="nostr-feed-content">
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
+        <div class="nostr-skeleton"><div class="nostr-skeleton-avatar"></div><div class="nostr-skeleton-body"><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div><div class="nostr-skeleton-line"></div></div></div>
       </div>
+      <a href="https://primal.net/paul" target="_blank" rel="noopener" style="display: block; text-align: center; margin-top: 0.85rem; padding: 0.6rem; font-size: 0.85rem; font-weight: 600; color: var(--orange); text-decoration: none;">View more notes &#8594;</a>
+    </div>
+  </div>
 
-      <div id="nostr-blog" class="nostr-blog" style="display:none">
-        <div class="nostr-blog-title"><a href="https://primal.net/paul#reads" target="_blank" rel="noopener">Blog</a></div>
-        <div id="nostr-blog-grid" class="nostr-blog-grid">
-          <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
-          <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
-        </div>
+  <!-- ==================== BLOG ==================== -->
+  <div id="blog-screen" class="screen tab-screen">
+    <div class="tab-header">
+      <a class="tab-back" onclick="goHome()">&#8592; Home</a>
+      <nav class="top-tabs" style="margin-top: 1rem;">
+        <a class="active" onclick="showTab('blog-screen')">Blog</a>
+        <a onclick="showTab('podcast-screen')">Media</a>
+      </nav>
+      <h1 class="tab-title">Blog</h1>
+      <p class="tab-subtitle">Long-form writing from Paul on bitcoin and freedom tech.</p>
+    </div>
+    <div id="nostr-blog" class="nostr-blog" style="display:none">
+      <div class="nostr-blog-title"><a href="https://primal.net/paul#reads" target="_blank" rel="noopener">View all on Primal</a></div>
+      <div id="nostr-blog-grid" class="nostr-blog-grid">
+        <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
+        <div class="nostr-blog-skeleton"><div class="nostr-blog-skeleton-img"></div><div class="nostr-blog-skeleton-body"><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div><div class="nostr-blog-skeleton-line"></div></div></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ==================== PODCAST ==================== -->
+  <div id="podcast-screen" class="screen tab-screen">
+    <div class="tab-header">
+      <a class="tab-back" onclick="goHome()">&#8592; Home</a>
+      <nav class="top-tabs" style="margin-top: 1rem;">
+        <a onclick="showTab('blog-screen')">Blog</a>
+        <a class="active" onclick="showTab('podcast-screen')">Media</a>
+      </nav>
+      <h1 class="tab-title">Media</h1>
+      <p class="tab-subtitle">Conversations and talks featuring Paul.</p>
+    </div>
+    <div class="podcast-embeds">
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/sNkvQyZyZ3w" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/136ZyH5uf_8" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/Sv7FLuiv14w" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
     </div>
   </div>
 
@@ -2554,6 +2669,13 @@
       }, 700);
     }
 
+    function showTab(id) {
+      // #hero has an ID-level display:flex that beats the .screen class rules,
+      // so it must be hidden explicitly (same approach as playTransition/goHome).
+      document.getElementById('hero').style.display = 'none';
+      showScreen(id);
+    }
+
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => {
         s.classList.remove('active');
@@ -2986,7 +3108,7 @@
         }).then(function(r) { return r.json(); });
       }
 
-      cachePost(["long_form_content_feed", { pubkey: PUBKEY, notes: "authored", limit: 10 }])
+      cachePost(["long_form_content_feed", { pubkey: PUBKEY, notes: "authored", limit: 20 }])
       .then(function(events) {
         var articles = events.filter(function(e) { return e.kind === 30023; });
 
@@ -3001,7 +3123,7 @@
 
         var uniqueArticles = Object.keys(byDtag).map(function(k) { return byDtag[k]; });
         uniqueArticles.sort(function(a, b) { return b.created_at - a.created_at; });
-        uniqueArticles = uniqueArticles.slice(0, 4);
+        uniqueArticles = uniqueArticles.slice(0, 12);
 
         if (!uniqueArticles.length) { blogEl.style.display = 'none'; return; }
 
