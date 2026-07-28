@@ -174,6 +174,56 @@
       border: 0;
     }
 
+    /* ===== FILM (click-to-play YouTube facade) ===== */
+    .hero-film {
+      width: 100%;
+      max-width: 520px;
+      margin: 1.75rem auto 0;
+    }
+    .hero-film-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: center;
+      margin-bottom: 0.6rem;
+    }
+    .yt-facade {
+      display: block;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .yt-facade img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .yt-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 2;
+      transition: background 0.2s;
+    }
+    .yt-play::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-40%, -50%);
+      border-style: solid;
+      border-width: 11px 0 11px 18px;
+      border-color: transparent transparent transparent #fff;
+    }
+    .yt-facade:hover .yt-play { background: var(--orange); }
+
     /* ===== TRANSITION OVERLAY ===== */
     #transition-overlay {
       position: fixed;
@@ -1938,6 +1988,13 @@
       <input type="email" placeholder="you@email.com" style="flex: 1; padding: 0.6rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--text); outline: none; font-family: inherit;">
       <button type="submit" style="padding: 0.6rem 1.1rem; border-radius: 8px; border: none; background: var(--orange); color: #fff; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;">Subscribe</button>
     </form>
+    <div class="hero-film fade-up">
+      <div class="hero-film-label">Watch the film</div>
+      <a class="video-embed yt-facade" href="https://youtu.be/63WbA7slCdg" target="_blank" rel="noopener" data-yt="63WbA7slCdg" onclick="return playFilm(this)">
+        <img src="https://i.ytimg.com/vi/63WbA7slCdg/maxresdefault.jpg" alt="Watch the film" loading="lazy" onerror="this.onerror=null; this.src='https://i.ytimg.com/vi/63WbA7slCdg/hqdefault.jpg'">
+        <span class="yt-play" aria-hidden="true"></span>
+      </a>
+    </div>
     <div id="nostr-feed" class="nostr-feed fade-up" style="display:none">
       <div class="nostr-feed-title"><a href="https://primal.net/paul" target="_blank" rel="noopener">Recent notes</a></div>
       <div id="nostr-feed-content">
@@ -2667,6 +2724,15 @@
           initGuide();
         }, 700);
       }, 700);
+    }
+
+    function playFilm(el) {
+      var id = el.getAttribute('data-yt');
+      var wrap = document.createElement('div');
+      wrap.className = 'video-embed';
+      wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" title="Film" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+      el.parentNode.replaceChild(wrap, el);
+      return false;
     }
 
     function showTab(id) {
