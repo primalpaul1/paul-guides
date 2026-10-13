@@ -7,13 +7,15 @@
   <meta name="description" content="Free guides to bitcoin and freedom tech by Paul.">
   <meta property="og:title" content="Paul's Guides">
   <meta property="og:description" content="Free guides to bitcoin and freedom tech.">
-  <meta property="og:image" content="https://paulinthejungle.com/logos/paul_hero.png">
+  <meta property="og:image" content="https://paulinthejungle.com/logos/og-share.jpg">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="893">
   <meta property="og:url" content="https://paulinthejungle.com">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Paul's Guides">
   <meta name="twitter:description" content="Free guides to bitcoin and freedom tech.">
-  <meta name="twitter:image" content="https://paulinthejungle.com/logos/paul_hero.png">
+  <meta name="twitter:image" content="https://paulinthejungle.com/logos/og-share.jpg">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
   <link rel="apple-touch-icon" href="logos/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,8 +37,10 @@
       --orange: #f7931a;
       --orange-dim: rgba(247, 147, 26, 0.08);
       --orange-glow: rgba(247, 147, 26, 0.15);
-      --primal: #bc1870;
-      --primal-dim: rgba(188, 24, 112, 0.08);
+      --primal: #1b7ff5;
+      --primal-dim: rgba(27, 127, 245, 0.08);
+      --primal-glow: rgba(27, 127, 245, 0.45);
+      --primal-gradient: linear-gradient(135deg, #00b8ff 0%, #0194f9 45%, #2554ed 100%);
 
       /* Guide (jungle theme) */
       --sky: #2a4a2a;
@@ -284,14 +288,16 @@
     #hero::before {
       content: '';
       position: absolute;
-      top: -40%;
+      top: -20%;
       left: 50%;
       transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, var(--orange-glow) 0%, transparent 70%);
+      width: min(1100px, 140vw);
+      height: 700px;
+      background:
+        radial-gradient(ellipse 38% 48% at 32% 52%, rgba(27, 127, 245, 0.13) 0%, transparent 100%),
+        radial-gradient(ellipse 38% 48% at 68% 52%, rgba(247, 147, 26, 0.11) 0%, transparent 100%);
       pointer-events: none;
-      opacity: 0.4;
+      opacity: 1;
       transition: opacity 0.8s ease;
     }
 
@@ -351,6 +357,15 @@
       margin-bottom: 0.5rem;
     }
 
+    .hero-title em {
+      font-style: italic;
+      background: linear-gradient(90deg, #4aa8ff 0%, #f7931a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      padding-right: 0.06em;
+    }
+
     .hero-subtitle {
       font-size: 1.05rem;
       color: #b0b0b0;
@@ -362,30 +377,29 @@
     .meme-container {
       position: relative;
       width: 100%;
-      max-width: 540px;
-      border-radius: var(--radius-lg);
+      max-width: 640px;
+      aspect-ratio: 1280 / 670;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #0f160f;
+      box-shadow:
+        -60px 20px 120px -50px var(--primal-glow),
+        60px 20px 120px -50px rgba(247, 147, 26, 0.40),
+        0 30px 80px -30px rgba(0, 0, 0, 0.9);
+      transition: box-shadow 0.4s ease, opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .meme-container::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: linear-gradient(
-        to bottom,
-        transparent 5%,
-        rgba(255, 255, 255, 0.25) 30%,
-        rgba(255, 255, 255, 0.35) 50%,
-        rgba(255, 255, 255, 0.25) 70%,
-        transparent 95%
-      );
-      box-shadow: 0 0 6px rgba(255, 165, 0, 0.15);
-      pointer-events: none;
-      z-index: 2;
+    .meme-container:has(.meme-left:hover) {
+      box-shadow:
+        -60px 20px 140px -40px rgba(27, 127, 245, 0.65),
+        60px 20px 120px -60px rgba(247, 147, 26, 0.20),
+        0 30px 80px -30px rgba(0, 0, 0, 0.9);
+    }
+    .meme-container:has(.meme-right:hover) {
+      box-shadow:
+        -60px 20px 120px -60px rgba(27, 127, 245, 0.20),
+        60px 20px 140px -40px rgba(247, 147, 26, 0.60),
+        0 30px 80px -30px rgba(0, 0, 0, 0.9);
     }
 
     .meme-prompt {
@@ -462,7 +476,8 @@
 
     .meme-image {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
 
@@ -481,7 +496,18 @@
       transition: all 0.3s ease;
     }
 
-    .meme-hitbox:hover { background: rgba(0, 0, 0, 0.12); }
+    .meme-hitbox::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .meme-left::before { background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.42) 35%); }
+    .meme-right::before { background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.42) 35%); }
+    .meme-container:has(.meme-left:hover) .meme-right::before,
+    .meme-container:has(.meme-right:hover) .meme-left::before { opacity: 1; }
 
     /* Spinning logo overlays */
     .meme-logo-spin {
@@ -562,11 +588,26 @@
       transform: translateY(4px);
       transition: all 0.25s ease;
       text-transform: uppercase;
+      position: relative;
+      z-index: 1;
     }
 
     .meme-hitbox:hover .meme-label { opacity: 1; transform: translateY(0); }
     .meme-label-bitcoin { background: var(--orange); color: #000; }
-    .meme-label-primal { background: var(--primal); color: #fff; }
+    /* Primal wave icon tinted like the neighbouring SVG icons, brand blue on hover */
+    .social-primal { color: var(--text-dim); }
+    .guide-social-primal { color: var(--guide-text-dim); }
+    .primal-mask {
+      display: block;
+      width: 22px;
+      height: 22px;
+      background: currentColor;
+      -webkit-mask: url('logos/primal_spin.png?v=2') center / contain no-repeat;
+      mask: url('logos/primal_spin.png?v=2') center / contain no-repeat;
+    }
+    .social-primal:hover .primal-mask { background: var(--primal-gradient); }
+
+    .meme-label-primal { background: var(--primal-gradient); color: #fff; }
 
     /* ===== EMAIL MODAL ===== */
     #email-overlay {
@@ -1607,6 +1648,24 @@
       object-fit: cover;
       flex-shrink: 0;
     }
+    .nostr-avatar-ph {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2b2b2b, #181818);
+      color: #8a8a8a;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .nostr-avatar-ph img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .nostr-note-name {
       font-size: 0.88rem;
       font-weight: 600;
@@ -1954,11 +2013,11 @@
       <a onclick="showTab('podcast-screen')">Media</a>
     </div>
     <div class="hero-label fade-up">Paul's Guides</div>
-    <h1 class="hero-title fade-up">Choose Your Path</h1>
+    <h1 class="hero-title fade-up">Choose Your <em>Path</em></h1>
     <p class="hero-subtitle fade-up">Free guides to freedom tech.</p>
 
     <div class="meme-container fade-up">
-      <video src="logos/paul_hero.mp4" class="meme-image" autoplay loop muted playsinline></video>
+      <video src="logos/paul_hero.mp4?v=2" poster="logos/paul_hero_poster.jpg?v=2" class="meme-image" autoplay loop muted playsinline preload="auto"></video>
       <div class="meme-hitbox meme-left" onclick="selectPath('primal')">
         <span class="meme-label meme-label-primal">Primal Guide</span>
       </div>
@@ -1974,8 +2033,8 @@
       <a href="https://www.instagram.com/paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
       </a>
-      <a href="https://primal.net/paul" target="_blank" rel="noopener" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <img src="logos/primal_spin.png" alt="Primal" style="width: 34px; height: 34px; border-radius: 6px; display: block;">
+      <a class="social-primal" href="https://primal.net/paul" target="_blank" rel="noopener" style="display: flex; align-items: center;">
+        <span class="primal-mask" role="img" aria-label="Primal"></span>
       </a>
       <a href="https://www.youtube.com/@Paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -2333,7 +2392,7 @@
       <p>Primal is my most used bitcoin wallet. I use it for groceries, paying my friends, and tipping content.</p>
 
       <a class="primal-card" href="https://primal.net" target="_blank" rel="noopener">
-        <img class="card-icon" src="logos/primal.png" alt="Primal" style="border-radius: 10px; width: 40px; height: 40px; margin-bottom: 0.75rem;">
+        <img class="card-icon" src="logos/primal.png?v=2" alt="Primal" style="border-radius: 10px; width: 40px; height: 40px; margin-bottom: 0.75rem;">
         <div class="primal-name"><span class="primal-dot"></span> Primal</div>
         <div class="primal-link">Open Primal &#8599;</div>
       </a>
@@ -2551,8 +2610,8 @@
         <a href="https://www.instagram.com/paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--guide-text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--guide-text)'" onmouseout="this.style.color='var(--guide-text-dim)'">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
         </a>
-        <a href="https://primal.net/paul" target="_blank" rel="noopener" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-          <img src="logos/primal_spin.png" alt="Primal" style="width: 34px; height: 34px; border-radius: 6px; display: block;">
+        <a class="social-primal guide-social-primal" href="https://primal.net/paul" target="_blank" rel="noopener" style="display: flex; align-items: center;">
+          <span class="primal-mask" role="img" aria-label="Primal" style="width: 22px; height: 22px;"></span>
         </a>
         <a href="https://www.youtube.com/@Paulinthejungle" target="_blank" rel="noopener" style="display: flex; align-items: center; color: var(--guide-text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--guide-text)'" onmouseout="this.style.color='var(--guide-text-dim)'">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -3105,7 +3164,9 @@
               a.innerHTML =
                 repostLabel +
                 '<div class="nostr-note-header">' +
-                  (author.avatar ? '<img class="nostr-note-avatar" src="' + esc(author.avatar) + '" alt="">' : '<div class="nostr-note-avatar" style="background:rgba(255,255,255,0.1)"></div>') +
+                  '<span class="nostr-note-avatar nostr-avatar-ph">' + esc(((author.name || author.handle || '?').trim().charAt(0) || '?').toUpperCase()) +
+                    (author.avatar ? '<img src="' + esc(author.avatar) + '" alt="" loading="lazy" onerror="this.remove()">' : '') +
+                  '</span>' +
                   '<div><div class="nostr-note-name">' + esc(author.name) + '</div>' +
                   (author.handle ? '<div class="nostr-note-handle">@' + esc(author.handle) + '</div>' : '') + '</div>' +
                   '<span class="nostr-note-time">' + timeAgo(item.ts) + '</span>' +
